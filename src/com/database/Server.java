@@ -8,6 +8,9 @@ public class Server {
 
     public static void main(String[] ar)    {
         int port = 6666; // случайный порт (может быть любое число от 1025 до 65535)
+        TestSer ts = new TestSer();
+        ts.name = "TEST SER";
+
         try {
             ServerSocket ss = new ServerSocket(port); // создаем сокет сервера и прив€зываем его к вышеуказанному порту
             System.out.println("Waiting for a client...");
@@ -20,21 +23,10 @@ public class Server {
             InputStream sin = socket.getInputStream();
             OutputStream sout = socket.getOutputStream();
 
-            //  онвертируем потоки в другой тип, чтоб легче обрабатывать текстовые сообщени€.
-            DataInputStream in = new DataInputStream(sin);
-            DataOutputStream out = new DataOutputStream(sout);
-
-
-            String line = null;
-            while(true) {
-                line = in.readUTF(); // ожидаем пока клиент пришлет строку текста.
-                System.out.println("The dumb client just sent me this line : " + line);
-                System.out.println("I'm sending it back...");
-                out.writeUTF(line); // отсылаем клиенту обратно ту самую строку текста.
-                out.flush(); // заставл€ем поток закончить передачу данных.
-                System.out.println("Waiting for the next line...");
-                System.out.println();
-            }
+            //  онвертируем потоки в другой тип
+            ObjectOutputStream oos = new ObjectOutputStream(sout); // создаем поток дл€ передачи объектов
+            oos.writeObject(ts); // —ериализуем и отправл€ем в выходной поток
+            // oos.flush();
         } catch(Exception x) { x.printStackTrace(); }
     }
 
