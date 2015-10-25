@@ -1,43 +1,43 @@
 package com.database;
 
 /**
- * Клиент базы данных
+ * РљР»РёРµРЅС‚ Р±Р°Р·С‹ РґР°РЅРЅС‹С…
  */
 import java.net.*;
 import java.io.*;
 
 public class Client {
     public static void main(String[] ar) {
-        int serverPort = 6666; // здесь обязательно нужно указать порт к которому привязывается сервер.
-        String address = "127.0.0.1"; // это IP-адрес компьютера, где исполняется наша серверная программа.
-        // Здесь указан адрес того самого компьютера где будет исполняться и клиент.
+        int serverPort = 6666; // Р·РґРµСЃСЊ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РЅСѓР¶РЅРѕ СѓРєР°Р·Р°С‚СЊ РїРѕСЂС‚ Рє РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРІСЏР·С‹РІР°РµС‚СЃСЏ СЃРµСЂРІРµСЂ.
+        String address = "127.0.0.1"; // СЌС‚Рѕ IP-Р°РґСЂРµСЃ РєРѕРјРїСЊСЋС‚РµСЂР°, РіРґРµ РёСЃРїРѕР»РЅСЏРµС‚СЃСЏ РЅР°С€Р° СЃРµСЂРІРµСЂРЅР°СЏ РїСЂРѕРіСЂР°РјРјР°.
+        // Р—РґРµСЃСЊ СѓРєР°Р·Р°РЅ Р°РґСЂРµСЃ С‚РѕРіРѕ СЃР°РјРѕРіРѕ РєРѕРјРїСЊСЋС‚РµСЂР° РіРґРµ Р±СѓРґРµС‚ РёСЃРїРѕР»РЅСЏС‚СЊСЃСЏ Рё РєР»РёРµРЅС‚.
 
         try {
-            InetAddress ipAddress = InetAddress.getByName(address); // создаем объект который отображает вышеописанный IP-адрес.
+            InetAddress ipAddress = InetAddress.getByName(address); // СЃРѕР·РґР°РµРј РѕР±СЉРµРєС‚ РєРѕС‚РѕСЂС‹Р№ РѕС‚РѕР±СЂР°Р¶Р°РµС‚ РІС‹С€РµРѕРїРёСЃР°РЅРЅС‹Р№ IP-Р°РґСЂРµСЃ.
             System.out.println("Any of you heard of a socket with IP address " + address + " and port " + serverPort + "?");
-            Socket socket = new Socket(ipAddress, serverPort); // создаем сокет используя IP-адрес и порт сервера.
+            Socket socket = new Socket(ipAddress, serverPort); // СЃРѕР·РґР°РµРј СЃРѕРєРµС‚ РёСЃРїРѕР»СЊР·СѓСЏ IP-Р°РґСЂРµСЃ Рё РїРѕСЂС‚ СЃРµСЂРІРµСЂР°.
             System.out.println("Yes! I just got hold of the program.");
 
-            // Берем входной и выходной потоки сокета, теперь можем получать и отсылать данные клиентом.
+            // Р‘РµСЂРµРј РІС…РѕРґРЅРѕР№ Рё РІС‹С…РѕРґРЅРѕР№ РїРѕС‚РѕРєРё СЃРѕРєРµС‚Р°, С‚РµРїРµСЂСЊ РјРѕР¶РµРј РїРѕР»СѓС‡Р°С‚СЊ Рё РѕС‚СЃС‹Р»Р°С‚СЊ РґР°РЅРЅС‹Рµ РєР»РёРµРЅС‚РѕРј.
             InputStream sin = socket.getInputStream();
             OutputStream sout = socket.getOutputStream();
 
-            // Конвертируем потоки в другой тип, чтоб легче обрабатывать текстовые сообщения.
+            // РљРѕРЅРІРµСЂС‚РёСЂСѓРµРј РїРѕС‚РѕРєРё РІ РґСЂСѓРіРѕР№ С‚РёРї, С‡С‚РѕР± Р»РµРіС‡Рµ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ С‚РµРєСЃС‚РѕРІС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ.
             DataInputStream in = new DataInputStream(sin);
             DataOutputStream out = new DataOutputStream(sout);
 
-            // Создаем поток для чтения с клавиатуры.
+            // РЎРѕР·РґР°РµРј РїРѕС‚РѕРє РґР»СЏ С‡С‚РµРЅРёСЏ СЃ РєР»Р°РІРёР°С‚СѓСЂС‹.
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String line = null;
             System.out.println("Type in something and press enter. Will send it to the server and tell ya what it thinks.");
             System.out.println();
 
             while (true) {
-                line = keyboard.readLine(); // ждем пока пользователь введет что-то и нажмет кнопку Enter.
+                line = keyboard.readLine(); // Р¶РґРµРј РїРѕРєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРІРµРґРµС‚ С‡С‚Рѕ-С‚Рѕ Рё РЅР°Р¶РјРµС‚ РєРЅРѕРїРєСѓ Enter.
                 System.out.println("Sending this line to the server...");
-                out.writeUTF(line); // отсылаем введенную строку текста серверу.
-                out.flush(); // заставляем поток закончить передачу данных.
-                line = in.readUTF(); // ждем пока сервер отошлет строку текста.
+                out.writeUTF(line); // РѕС‚СЃС‹Р»Р°РµРј РІРІРµРґРµРЅРЅСѓСЋ СЃС‚СЂРѕРєСѓ С‚РµРєСЃС‚Р° СЃРµСЂРІРµСЂСѓ.
+                out.flush(); // Р·Р°СЃС‚Р°РІР»СЏРµРј РїРѕС‚РѕРє Р·Р°РєРѕРЅС‡РёС‚СЊ РїРµСЂРµРґР°С‡Сѓ РґР°РЅРЅС‹С….
+                line = in.readUTF(); // Р¶РґРµРј РїРѕРєР° СЃРµСЂРІРµСЂ РѕС‚РѕС€Р»РµС‚ СЃС‚СЂРѕРєСѓ С‚РµРєСЃС‚Р°.
                 System.out.println("The server was very polite. It sent me this : " + line);
                 System.out.println("Looks like the server is pleased with us. Go ahead and enter more lines.");
                 System.out.println();
