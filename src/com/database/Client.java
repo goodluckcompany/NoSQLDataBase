@@ -30,6 +30,7 @@ public class Client {
             ts = (TestSer)ois.readObject(); // Десериализуем объект из входного потока
 
             System.out.println("Server object name - " + ts.name);
+            System.out.println("Object Hastable -" + ts.table.toString());
             System.out.println();
         } catch (Exception x) {
             x.printStackTrace();

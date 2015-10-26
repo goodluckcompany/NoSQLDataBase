@@ -1,6 +1,8 @@
 package com.database;
 import java.net.*;
 import java.io.*;
+import java.util.Hashtable;
+
 /**
  * Класс сервера база данных
  */
@@ -10,6 +12,10 @@ public class Server {
         int port = 6666; // случайный порт (может быть любое число от 1025 до 65535)
         TestSer ts = new TestSer();
         ts.name = "TEST SER";
+        ts.table = new Hashtable<>();
+        ts.table.put("first","test");
+        ts.table.put("second","serv");
+
 
         try {
             ServerSocket ss = new ServerSocket(port); // создаем сокет сервера и привязываем его к вышеуказанному порту
