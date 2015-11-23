@@ -1,9 +1,7 @@
 package mainserver;
 
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,14 +17,27 @@ public class MainServer {
     BufferedReader consoleInput = null;
     String cString = null;
     int WORK_PORT = 6667;
-
-    public static void main(String[] args) {
+    Request r;
+    public static void main(String[] args) throws IOException {
         MainServer ms = new MainServer();
+
         ms.loadListWorkServers();
         ms.loadWorkServerSockets();
         ms.showListWorkServers();
-        while (true){
-            System.in.read();
+
+        Socket socket = ms.sockestOfWorkServers.get(0);
+
+        OutputStream sout = socket.getOutputStream();
+        // Конвертируем поток в другой тип
+        ObjectOutputStream oos = new ObjectOutputStream(sout);
+
+
+
+        int i = 0;
+        while (i<10){
+           ms.r = new Request();
+           oos.writeObject(ms.r);
+           i++;
         }
     }
 
