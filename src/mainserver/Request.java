@@ -6,16 +6,24 @@ import java.io.Serializable;
  * Created by homie on 22.11.2015.
  */
 public class  Request  implements Serializable {
-    static int count = 0;
-    String name = "req";
+    String to;
+    String data;
 
-    public Request(){
-        name = name + count;
-        count++;
+    public Request(String _to,String _data){
+        to = _to;
+        data = _data;
     }
 
     @Override
     public String toString() {
-        return name;
+        return getTo() + " : " + getData();
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public String getTo() {
+        return to;
     }
 }

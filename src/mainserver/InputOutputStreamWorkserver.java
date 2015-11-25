@@ -1,5 +1,6 @@
 package mainserver;
 
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 
@@ -18,18 +19,13 @@ public class InputOutputStreamWorkserver {
         ipAdress = _socket.getInetAddress().toString();
         socket = _socket;
 
-
         try {
             oos = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             System.out.println("Object output stream  for socket: " + ipAdress + " : " + WORK_PORT + " do not create!");
         }
-
         try {
-
             ios = new ObjectInputStream(socket.getInputStream());
-
-            System.err.println("I'm here after ios");
         } catch (IOException e) {
             System.out.println("Object input stream  for socket: " + ipAdress + " : " + WORK_PORT + " do not create!");
         }
