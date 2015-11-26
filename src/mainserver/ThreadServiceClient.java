@@ -25,8 +25,10 @@ public class ThreadServiceClient implements Runnable {
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             Request r = (Request)ois.readObject();
+            String ipAdressOfClient = socket.getInetAddress().toString();
+            ipAdressOfClient = ipAdressOfClient.replace("/","");
             if(ms.isItemListOfWorkserver(r.getTo())){
-                ms.getItemListOfWorkserver(r.getTo()).oos.writeObject(r);
+                ms.getItemListOfWorkserver(r.getTo()).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
             }
         } catch (IOException e) {
             e.printStackTrace();
