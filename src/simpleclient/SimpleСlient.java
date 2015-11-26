@@ -18,7 +18,7 @@ public class Simple—lient {
 
     public static void main(String[] args){
         Simple—lient sc = new Simple—lient();
-        sc.sendRequest(new Request("172.18.13.84","Hello!"));
+        sc.sendRequest(new Request("172.18.13.84","Hello1!"));
         sc.waitResponse();
     }
 
@@ -60,6 +60,7 @@ public class Simple—lient {
         if(socket.isConnected()){
             try{
                 Request response = (Request) ios.readObject();
+                System.out.println(response);
             } catch (ClassNotFoundException e) {
                 System.err.println(e);
             } catch (IOException e) {

@@ -15,7 +15,7 @@ public class MainServer {
     volatile ArrayList<InputOutputStreamWorkserver> listOfWorkserver;
     Iterator<InputOutputStreamWorkserver> itr;
 
-    LinkedList<Socket> listOfClient;
+    volatile LinkedList<Socket> listOfClient;
 
     BufferedReader bufread = null;
     BufferedReader consoleInput = null;
@@ -33,10 +33,13 @@ public class MainServer {
 
         ms.loadListWorkServers();
         ms.showListWorkServers();
+        ms.initThreadISFromClient();
 
         while (true){
             System.out.println("Wait user...");
             ms.tempSocket = ms.socketToClient.accept();
+            ms.listOfClient.add(ms.tempSocket);
+
             new ThreadServiceClient(ms.tempSocket,ms);
             System.out.println("User connect to be!");
         }
@@ -114,5 +117,31 @@ public class MainServer {
             if(tmp.getIpAdress().equals("/"+_ipAdress)) return true;
         }
         return false;
+    }
+
+    public boolean isItemListOfClient(String _ipAdress){
+        Iterator<Socket> iterator = listOfClient.iterator();
+        while (iterator.hasNext()){
+            Socket tmp = iterator.next();
+            System.out.println(tmp.getInetAddress().toString() + " == /" +_ipAdress);
+            if(tmp.getInetAddress().toString().equals("/"+_ipAdress)) return true;
+        }
+        return false;
+    }
+
+    public Socket getItemListOfClient(String _ipAdress){
+        Iterator<Socket> iterator = listOfClient.iterator();
+        while (iterator.hasNext()){
+            Socket tmp = iterator.next();
+            if(tmp.getInetAddress().toString().equals("/"+_ipAdress)) return tmp;
+        }
+        return null;
+    }
+
+    public void initThreadISFromClient(){
+        itr = listOfWorkserver.iterator();
+        while (itr.hasNext()){
+            new ThreadInputStreamFormWorkserver(this,itr.next());
+        }
     }
 }
