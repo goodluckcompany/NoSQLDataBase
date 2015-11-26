@@ -25,6 +25,7 @@ public class Workserver {
     int MAX_QUEUE = 100;
     List <NoSqlDB> listDb = new LinkedList<>();
     Request r;
+
     public static void main(String[] args){
         new Workserver();
     }
@@ -42,7 +43,9 @@ public class Workserver {
         }
         System.out.println("Wait connect...");
         try {
+
             socket = socketToMain.accept();
+            System.out.println("Соединился");
         } catch (IOException e) {
             System.out.println("SockeToMain.accept");
         }
@@ -59,9 +62,9 @@ public class Workserver {
         } catch (IOException e) {
             System.out.println("sout");
         }
-
+        ObjectOutputStream oos = null;
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(sout);
+            oos = new ObjectOutputStream(sout);
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,20 +83,19 @@ public class Workserver {
 
 
             System.out.println("Connect to be!");
-            int i = 0;
+
             while ( true){
-
-                r = new Request();
                 try {
-                    r = (Request)ois.readObject();
-                    System.out.println(r.toString());
+                    System.out.println("Создал поток");
+                    new ThreadWs((Request)ois.readObject(), oos);
+                //    r = (Request)ois.readObject();
 
+                    System.out.println("Пошел дальше");
                 } catch (IOException e) {
                     System.out.printf("r=ois");
                 } catch (ClassNotFoundException e) {
                     System.out.println("Request not found");
                 }
-                i++;
             }
         }
 
