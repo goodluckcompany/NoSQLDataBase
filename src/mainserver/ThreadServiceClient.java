@@ -25,7 +25,6 @@ public class ThreadServiceClient implements Runnable {
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             Request r = (Request)ois.readObject();
-            System.err.println(r);
             if(ms.isItemListOfWorkserver(r.getTo())){
                 ms.getItemListOfWorkserver(r.getTo()).oos.writeObject(r);
             }

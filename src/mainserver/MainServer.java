@@ -40,14 +40,6 @@ public class MainServer {
             new ThreadServiceClient(ms.tempSocket,ms);
             System.out.println("User connect to be!");
         }
-
-
-
-        /*int i = 0;
-        while (i < 10){
-            ms.r = new Request();
-            ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(ms.r);
-        } */
     }
 
     public MainServer(){
@@ -119,7 +111,6 @@ public class MainServer {
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             InputOutputStreamWorkserver tmp = itr.next();
-            System.err.println(tmp.getIpAdress() + " === /" +_ipAdress);
             if(tmp.getIpAdress().equals("/"+_ipAdress)) return true;
         }
         return false;
