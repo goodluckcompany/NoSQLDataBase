@@ -15,24 +15,25 @@ public class NoSqlDB {
     private String dbName;
     private Hashtable<String, String> table;
     private long fileSize;
+    private String dir;
 
     //Конструктор
     public NoSqlDB(String dbName){
         this.dbName = dbName;
-        String fileName = dbName + ".nosql";
-        String baseDir = "";
+        dir = "";
         try {
-            baseDir = new File(".").getCanonicalPath();
+            dir = new File(".").getCanonicalPath();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        baseDir += File.separator + "Databases" + File.separator;
+        dir += File.separator + "Databases" + File.separator + dbName + ".nosql" ;
 
-        //TODO: запись в фалй через GSON и чтение его и перевод в нормальный формат
+
      //   String jsonDB = new Gson().toJson(table);
      //   table = new Gson().fromJson(jsonDB,Hashtable.class);
+
         fileSize = 0;
-        if (new File(baseDir+fileName).exists()) {
+        if (new File(dir).exists()) {
 
             //Если файл существует читаем его и меняем размер
             readDB();
@@ -40,10 +41,9 @@ public class NoSqlDB {
         }else{
 
             //Создание файла и пути до файла если не существует
-            File dbFile = new File(baseDir);
+            File dbFile = new File(dir);
             try {
-                dbFile.mkdirs();
-                dbFile = new File(baseDir+fileName);
+                dbFile.getParentFile().mkdirs();
                 dbFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -58,10 +58,27 @@ public class NoSqlDB {
     }
 
 
-    //читает из файла с именем dbName базу данных
+    //читает из файла с именем dbName базу данных из директории dir
     private void readDB(){
-        table = new Hashtable<>();
+        String jsonDB = "";
+        try(FileReader reader = new FileReader(dir))
+        {
+            // читаем посимвольно
+            int c;
+            while((c=reader.read())!=-1){
 
+                jsonDB = jsonDB + (char) c;
+            }
+        }
+        catch(IOException ex){
+
+            System.out.println(ex.getMessage());
+        }
+        if(jsonDB == ""){
+            table = new Hashtable<>();
+        }else {
+            table = new Gson().fromJson(jsonDB, Hashtable.class);
+        }
     }
 
     //изменяет информацию о размере файла
@@ -79,10 +96,31 @@ public class NoSqlDB {
 
     }
 
-   public long getFileSize(){
+
+    public long getFileSize(){
        return fileSize;
    }
 
+    //запись таблицы в файл
+    private void writeTableToFile(){
+        FileWriter writeFile = null;
+        try {
+            File tableFile = new File(dir);
+            writeFile = new FileWriter(tableFile);
+            String jsonDB = new Gson().toJson(table);
+            writeFile.write(jsonDB);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(writeFile != null) {
+                try {
+                    writeFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     public String getDbName(){
         return dbName;
@@ -90,21 +128,27 @@ public class NoSqlDB {
 
     //Добавляет пару ключ, значение
     public void append(String key, String value){
-        //TODO: запись в файл
+
+        //изменяем таблицу
         table.put(key, value);
+        //запись в файл
+        writeTableToFile();
     }
 
     //Возвращает значение по ключу
     public ResponseItem getValue(String key){
         ResponseItem item = new ResponseItem();
-        item.ResponseItemList.add(new Item(key,table.get(key)));
+        if(table.get(key) != null) {
+            item.ResponseItemList.add(new Item(key,table.get(key)));
+        }
         return item;
     }
 
     //удаляет запись с заданным ключом
-    //TODO: удаление из файла, пока перезапись
     public void delKey(String key){
         table.remove(key);
+        //изменение файла
+        writeTableToFile();
     }
 
 
@@ -113,16 +157,17 @@ public class NoSqlDB {
         Enumeration<String> keys = table.keys();
         while(keys.hasMoreElements()) {
             String key = keys.nextElement();
-            if(table.get(key) == value) {
+            if(table.get(key).compareTo(value) == 0) {
                 delKey(key);
             }
         }
 
+        writeTableToFile();
+
 
     }
 
-    //Возвращает все пары ключ значение в виде:
-    //String = key1:value1 key2:value2 ...
+    //Возвращает все пары ключ значение в классе ResponseItem
     public ResponseItem getAll(){
         ResponseItem items = new ResponseItem();
         for (Map.Entry<String, String> entry : table.entrySet()) {
@@ -134,17 +179,17 @@ public class NoSqlDB {
 
     //возможно тоже не понадобится
     public String toString(){
-        return table.toString();
+        if(table == null) return "";
+        else return table.toString();
     }
 
-    //Возвращает строку, содержащую все ключи у которых заданное значение
-    //String = "key1 key2 ..."
+    //Возвращает ResponseItem, содержащий все ключи у которых заданное значение
     public ResponseItem getKeys(String value){
         ResponseItem items = new ResponseItem();
         Enumeration<String> keys = table.keys();
         while(keys.hasMoreElements()) {
             String key = keys.nextElement();
-            if (table.get(key) == value) {
+            if (table.get(key).compareTo(value) == 0) {
   //              s = s + key + " ";
                 items.ResponseItemList.add(new Item(key,value));
             }
@@ -159,12 +204,13 @@ public class NoSqlDB {
     public static void main(String[] args) {
         NoSqlDB db = new NoSqlDB("test");
 
-        db.append("test","oleg");
-        db.append("test1","oleg");
-        db.append("test3","alesha");
+  //      db.append("test","oleg");
+  //      db.append("test1","oleg");
+  //      db.append("test3","alesha");
 
-      //  db.delValue("oleg");
-        String s = db.toString();
+  //      db.delValue("oleg");
+  //      db.delKey("test3");
+   //     String s = db.toString();
         ResponseItem item = db.getKeys("oleg");
         for(int i = 0; i < item.ResponseItemList.size(); i++){
             System.out.print(item.ResponseItemList.get(i).toString());
@@ -172,7 +218,7 @@ public class NoSqlDB {
 
 
          ResponseItem item2 = db.getValue("test3");
-        System.out.println(item2.ResponseItemList.get(0).toString());
+        if(item2.ResponseItemList.size() != 0) System.out.println(item2.ResponseItemList.get(0).toString());
     //    System.out.println(db.getAll());
 
 
