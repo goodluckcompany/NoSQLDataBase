@@ -23,7 +23,8 @@ public class Workserver {
     int symbol;
     int PORT = 6667;
     int MAX_QUEUE = 100;
-    List <NoSqlDB> listDb = new LinkedList<>();
+    public List <NoSqlDB> listDb = new LinkedList<>();
+    public ResponseItem listR = new ResponseItem();
     Request r;
 
     public static void main(String[] args){
@@ -31,11 +32,6 @@ public class Workserver {
     }
 
     Workserver(){
-
-
-
-
-
         try {
             socketToMain = new ServerSocket(PORT,MAX_QUEUE);
         } catch (IOException e) {
@@ -80,18 +76,22 @@ public class Workserver {
             System.out.println("ois");
         }
 
-
-
             System.out.println("Connect to be!");
 
-            while ( true){
+            while (!socket.isClosed()){
                 try {
                     System.out.println("Создал поток");
-                    new ThreadWs((Request)ois.readObject(), oos);
-                //    r = (Request)ois.readObject();
+                    new ThreadWs((Request)ois.readObject(), oos,listDb,listR);
+                    // r = (Request)ois.readObject();
+
 
                     System.out.println("Пошел дальше");
                 } catch (IOException e) {
+                    try {
+                        socket.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                     System.out.printf("r=ois");
                 } catch (ClassNotFoundException e) {
                     System.out.println("Request not found");
