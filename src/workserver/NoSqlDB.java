@@ -15,35 +15,35 @@ public class NoSqlDB {
     private String dbName;
     private Hashtable<String, String> table;
     private long fileSize;
+    private String dir;
 
-    //Конструктор
+    //РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
     public NoSqlDB(String dbName){
         this.dbName = dbName;
-        String fileName = dbName + ".nosql";
-        String baseDir = "";
+        dir = "";
         try {
-            baseDir = new File(".").getCanonicalPath();
+            dir = new File(".").getCanonicalPath();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        baseDir += File.separator + "Databases" + File.separator;
+        dir += File.separator + "Databases" + File.separator + dbName + ".nosql" ;
 
-        //TODO: запись в фалй через GSON и чтение его и перевод в нормальный формат
+
      //   String jsonDB = new Gson().toJson(table);
      //   table = new Gson().fromJson(jsonDB,Hashtable.class);
-        fileSize = 0;
-        if (new File(baseDir+fileName).exists()) {
 
-            //Если файл существует читаем его и меняем размер
+        fileSize = 0;
+        if (new File(dir).exists()) {
+
+            //Р•СЃР»Рё С„Р°Р№Р» СЃСѓС‰РµСЃС‚РІСѓРµС‚ С‡РёС‚Р°РµРј РµРіРѕ Рё РјРµРЅСЏРµРј СЂР°Р·РјРµСЂ
             readDB();
             changeFileSize();
         }else{
 
-            //Создание файла и пути до файла если не существует
-            File dbFile = new File(baseDir);
+            //РЎРѕР·РґР°РЅРёРµ С„Р°Р№Р»Р° Рё РїСѓС‚Рё РґРѕ С„Р°Р№Р»Р° РµСЃР»Рё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
+            File dbFile = new File(dir);
             try {
-                dbFile.mkdirs();
-                dbFile = new File(baseDir+fileName);
+                dbFile.getParentFile().mkdirs();
                 dbFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -58,13 +58,30 @@ public class NoSqlDB {
     }
 
 
-    //читает из файла с именем dbName базу данных
+    //С‡РёС‚Р°РµС‚ РёР· С„Р°Р№Р»Р° СЃ РёРјРµРЅРµРј dbName Р±Р°Р·Сѓ РґР°РЅРЅС‹С… РёР· РґРёСЂРµРєС‚РѕСЂРёРё dir
     private void readDB(){
-        table = new Hashtable<>();
+        String jsonDB = "";
+        try(FileReader reader = new FileReader(dir))
+        {
+            // С‡РёС‚Р°РµРј РїРѕСЃРёРјРІРѕР»СЊРЅРѕ
+            int c;
+            while((c=reader.read())!=-1){
 
+                jsonDB = jsonDB + (char) c;
+            }
+        }
+        catch(IOException ex){
+
+            System.out.println(ex.getMessage());
+        }
+        if(jsonDB == ""){
+            table = new Hashtable<>();
+        }else {
+            table = new Gson().fromJson(jsonDB, Hashtable.class);
+        }
     }
 
-    //изменяет информацию о размере файла
+    //РёР·РјРµРЅСЏРµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЂР°Р·РјРµСЂРµ С„Р°Р№Р»Р°
     private void changeFileSize(){
 
         String baseDir = "";
@@ -79,94 +96,136 @@ public class NoSqlDB {
 
     }
 
-   public long getFileSize(){
+
+    public long getFileSize(){
        return fileSize;
    }
 
+    //Р·Р°РїРёСЃСЊ С‚Р°Р±Р»РёС†С‹ РІ С„Р°Р№Р»
+    private void writeTableToFile(){
+        FileWriter writeFile = null;
+        try {
+            File tableFile = new File(dir);
+            writeFile = new FileWriter(tableFile);
+            String jsonDB = new Gson().toJson(table);
+            writeFile.write(jsonDB);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(writeFile != null) {
+                try {
+                    writeFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     public String getDbName(){
         return dbName;
     }
 
-    //Добавляет пару ключ, значение
+    //Р”РѕР±Р°РІР»СЏРµС‚ РїР°СЂСѓ РєР»СЋС‡, Р·РЅР°С‡РµРЅРёРµ
     public void append(String key, String value){
-        //TODO: запись в файл
+
+        //РёР·РјРµРЅСЏРµРј С‚Р°Р±Р»РёС†Сѓ
         table.put(key, value);
+        //Р·Р°РїРёСЃСЊ РІ С„Р°Р№Р»
+        writeTableToFile();
     }
 
-    //Возвращает значение по ключу
-    public String getValue(String key){
-        return table.get(key);
+    //Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ РїРѕ РєР»СЋС‡Сѓ
+    public ResponseItem getValue(String key){
+        ResponseItem item = new ResponseItem();
+        if(table.get(key) != null) {
+            item.ResponseItemList.add(new Item(key,table.get(key)));
+        }
+        return item;
     }
 
-    //удаляет запись с заданным ключом
-    //TODO: удаление из файла, пока перезапись
+    //СѓРґР°Р»СЏРµС‚ Р·Р°РїРёСЃСЊ СЃ Р·Р°РґР°РЅРЅС‹Рј РєР»СЋС‡РѕРј
     public void delKey(String key){
         table.remove(key);
+        //РёР·РјРµРЅРµРЅРёРµ С„Р°Р№Р»Р°
+        writeTableToFile();
     }
 
 
-    //удаляет все записи с заданным значением
+    //СѓРґР°Р»СЏРµС‚ РІСЃРµ Р·Р°РїРёСЃРё СЃ Р·Р°РґР°РЅРЅС‹Рј Р·РЅР°С‡РµРЅРёРµРј
     public void delValue(String value){
         Enumeration<String> keys = table.keys();
         while(keys.hasMoreElements()) {
             String key = keys.nextElement();
-            if(table.get(key) == value) {
+            if(table.get(key).compareTo(value) == 0) {
                 delKey(key);
             }
         }
 
+        writeTableToFile();
+
 
     }
 
-    //Возвращает все пары ключ значение в виде:
-    //String = key1:value1 key2:value2 ...
-    public String getAll(){
-        String s = "";
+    //Р’РѕР·РІСЂР°С‰Р°РµС‚ РІСЃРµ РїР°СЂС‹ РєР»СЋС‡ Р·РЅР°С‡РµРЅРёРµ РІ РєР»Р°СЃСЃРµ ResponseItem
+    public ResponseItem getAll(){
+        ResponseItem items = new ResponseItem();
         for (Map.Entry<String, String> entry : table.entrySet()) {
-            s += entry.getKey() + ":" + entry.getValue() + " ";
+ //           s += entry.getKey() + ":" + entry.getValue() + " ";
+            items.ResponseItemList.add(new Item(entry.getKey(),entry.getValue()));
         }
-        return s;
+        return items;
     }
 
-    //возможно тоже не понадобится
+    //РІРѕР·РјРѕР¶РЅРѕ С‚РѕР¶Рµ РЅРµ РїРѕРЅР°РґРѕР±РёС‚СЃСЏ
     public String toString(){
-        return table.toString();
+        if(table == null) return "";
+        else return table.toString();
     }
 
-    //Возвращает строку, содержащую все ключи у которых заданное значение
-    //String = "key1 key2 ..."
-    public String getKeys(String value){
-        String s = "";
+    //Р’РѕР·РІСЂР°С‰Р°РµС‚ ResponseItem, СЃРѕРґРµСЂР¶Р°С‰РёР№ РІСЃРµ РєР»СЋС‡Рё Сѓ РєРѕС‚РѕСЂС‹С… Р·Р°РґР°РЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ
+    public ResponseItem getKeys(String value){
+        ResponseItem items = new ResponseItem();
         Enumeration<String> keys = table.keys();
         while(keys.hasMoreElements()) {
             String key = keys.nextElement();
-            if (table.get(key) == value) {
-                s = s + key + " ";
+            if (table.get(key).compareTo(value) == 0) {
+  //              s = s + key + " ";
+                items.ResponseItemList.add(new Item(key,value));
             }
         }
-        return s;
+        return items;
     }
 
 
 
 
-    //функция для тестирования класса
+    //С„СѓРЅРєС†РёСЏ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ РєР»Р°СЃСЃР°
     public static void main(String[] args) {
         NoSqlDB db = new NoSqlDB("test");
 
-        db.append("test","oleg");
-        db.append("test1","oleg");
-        db.append("test3","alesha");
+  //      db.append("test","oleg");
+  //      db.append("test1","oleg");
+  //      db.append("test3","alesha");
 
-      //  db.delValue("oleg");
-        String s = db.toString();
-        String ss = db.getKeys("oleg");
-        System.out.println(ss);
+  //      db.delValue("oleg");
+  //      db.delKey("test3");
+   //     String s = db.toString();
+        ResponseItem item = db.getKeys("oleg");
+        for(int i = 0; i < item.ResponseItemList.size(); i++){
+            System.out.print(item.ResponseItemList.get(i).toString());
+        }
 
 
-        System.out.println(db.getAll());
+         ResponseItem item2 = db.getValue("test3");
+        if(item2.ResponseItemList.size() != 0) System.out.println(item2.ResponseItemList.get(0).toString());
+    //    System.out.println(db.getAll());
 
+
+        ResponseItem item3 = db.getAll();
+        for(int i = 0; i < item3.ResponseItemList.size(); i++){
+            System.out.print(item3.ResponseItemList.get(i).toString());
+        }
 
 
         Hashtable<String, String> test = new Hashtable<>();
