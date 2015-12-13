@@ -11,14 +11,14 @@ public class  Request  implements Serializable {
     String nosqlR;
     String answer;
     boolean success = false;
-    boolean isSuccess(){
+    public boolean isSuccess(){
         return success;
     }
-    String getAnswer(){
+    public String getAnswer(){
         return answer;
     }
 
-    String getNosqlR(){
+    public String getNosqlR(){
         return nosqlR;
     }
 
