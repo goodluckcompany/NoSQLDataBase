@@ -40,9 +40,10 @@ public class NoSqlConnector {
     }
     
     Request sendCommand(String command){
+        response.setNosqlR(command);
         if(socket.isConnected()){
             try{
-                oos.writeObject(command);
+                oos.writeObject(response);
             } catch (IOException e) {
                 System.err.println(e);
             }
