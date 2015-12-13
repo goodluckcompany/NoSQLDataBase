@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Iterator;
+
 import mainserver.Request;
+import workserver.Item;
+import workserver.ResponseItem;
 
 /**
  * Created by homie on 22.11.2015.
@@ -12,6 +16,7 @@ import mainserver.Request;
 public class Simple—lient {
     Socket socket;
     Request req;
+    ResponseItem respItem;
     ObjectOutputStream oos;
     ObjectInputStream ios;
     int MAIN_PORT = 6661;
@@ -77,8 +82,13 @@ public class Simple—lient {
 
         if(socket.isConnected()){
             try{
-                Request response = (Request) ios.readObject();
-                System.out.println(response);
+                ResponseItem response = (ResponseItem) ios.readObject();
+
+                Iterator<Item> itr;
+                itr = response.ResponseItemList.iterator();
+                while(itr.hasNext()) {
+                    System.out.println(itr.next());
+                }
             } catch (ClassNotFoundException e) {
                 System.err.println(e);
             } catch (IOException e) {

@@ -28,76 +28,77 @@ public class ThreadServiceClient implements Runnable {
     public void run() {
         try {
             ois = new ObjectInputStream(socket.getInputStream());
-            Request r = (Request)ois.readObject();
+            Request r;
 
-            String stringRequest = r.getNosqlR();
-            String[] stringListRequest = stringRequest.split(" ");
+            while (true) {
+                r = (Request) ois.readObject();
 
-            String ipAdressOfClient = socket.getInetAddress().toString();
-            ipAdressOfClient = ipAdressOfClient.replace("/","");
+                String stringRequest = r.getNosqlR();
+                String[] stringListRequest = stringRequest.split(" ");
 
-            switch (stringListRequest[0].toLowerCase()){
-                case "create":
-                {
-                    ms.availableTables.addTable(stringListRequest[1],"172.18.13.84","172.18.27.29");
-                    ms.availableTables.saveTable();
-                    ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
-                    ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
-                    break;
-                }
-                case "output":
-                case "download":
-                {
-                    String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length-1]);
-                    String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
-                    if(ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON){
-                        ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
+                String ipAdressOfClient = socket.getInetAddress().toString();
+                ipAdressOfClient = ipAdressOfClient.replace("/", "");
+
+                switch (stringListRequest[0].toLowerCase()) {
+                    case "create": {
+                        System.out.println(r.getNosqlR() + " -> create");
+                        ms.availableTables.addTable(stringListRequest[1], "172.18.13.84", "172.18.27.29");
+                        //ms.availableTables.saveTable();
+                        ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                        ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                        break;
                     }
-                    else if(ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                        ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
-                    }
-                    break;
-                }
-                case "add":
-                {
-                    String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length-1]);
-                    String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
-                    if(ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON){
-                        ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
-                    }
-                    if(ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                        ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
-                    }
-                    break;
-                }
-                case "delete":
-                {
-                    if(stringListRequest.length > 2)
-                    {
-                        String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length-1]);
+                    case "output":
+                    case "download": {
+                        System.out.println(r.getNosqlR() + " -> output or download");
+                        String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length - 1]);
                         String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
-                        if(ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON){
-                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
-                        }
-                        if(ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
+                        if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                        } else if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
                         }
                         break;
                     }
-                    else {
-                        String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length-1]);
+                    case "add": {
+                        System.out.println(r.getNosqlR() + " -> add");
+                        String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length - 1]);
                         String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
-                        ms.availableTables.removeTable(stringListRequest[1]);
-                        ms.availableTables.saveTable();
-
-                        if(ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON){
-                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
+                        if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
                         }
-                        if(ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
+                        if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
                         }
+                        break;
                     }
-                    break;
+                    case "delete": {
+                        System.out.println(r.getNosqlR() + " -> delete");
+                        if (stringListRequest.length > 2) {
+                            String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length - 1]);
+                            String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
+                            if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                            }
+                            if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                            }
+                            break;
+                        } else {
+                            String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length - 1]);
+                            String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
+                            ms.availableTables.removeTable(stringListRequest[1]);
+                            ms.availableTables.saveTable();
+
+                            if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                            }
+                            if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                            }
+                        }
+                        break;
+                    }
                 }
             }
         } catch (IOException e) {
