@@ -1,5 +1,6 @@
 package workserver;
 
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -14,7 +15,7 @@ public class NoSqlParser
     String key = "";
     String value = "";
     String nameTable = "";
-    public String execute(String sql){
+    public String execute(String sql,List<NoSqlDB> listDb, ResponseItem items){
         sb = new StringTokenizer(sql);
         start = sb.nextToken();
         switch (start){
@@ -25,6 +26,7 @@ public class NoSqlParser
                     if (sb.nextToken().equals("key"))
                         key = sb.nextToken();
                     nameTable = sb.nextToken();
+                    items = listDb.get(0).getValue(key);
                     // вывоз соответствующей функции вывода значения ключа в таблице db
                     break;
                 }
@@ -32,6 +34,7 @@ public class NoSqlParser
                     if (sb.nextToken().equals("key") && sb.nextToken().equals("value"))
                         value = sb.nextToken();
                     nameTable = sb.nextToken();
+                    items = listDb.get(0).getKeys(value);
                     // вывоз соответствующей функции вывода всех ключей с заданным значением в таблице db
                     break;
                 }
@@ -45,6 +48,8 @@ public class NoSqlParser
                     if (sb.nextToken().equals("value"))
                         value = sb.nextToken();
                     nameTable = sb.nextToken();
+                    // пусть возвращает 1 в случае успеха, 0 в случае провала
+                    listDb.get(0).append(key,value);
                     // вывоз соответствующей функции добавления ключа со значением в таблицу db
                     break;
                 }
@@ -64,23 +69,27 @@ public class NoSqlParser
                         if (sb.nextToken().equals("value")){
                             value = sb.nextToken();
                             nameTable = sb.nextToken();
+                            listDb.get(0).delKey(key);
                             // вывоз соответствующей функции удаления всех ключей с заданным значением в таблице db
                             break;
                         }
                     System.out.println("ERRORdelAll");
                 }
                 nameTable = start;
+                listDb.remove(0);
                 // вывоз соответствующей функции удаления таблицы db
                 System.out.println("ERRORdel");
                 break;
             case "download": start = "download";
                 System.out.println(start);
                 nameTable = sb.nextToken();
+                items = listDb.get(0).getAll();
                 // вывоз соответствующей функции возвращения таблицы db
                 break;
             case "create": start = "create";
                 System.out.println(start);
                 nameTable = sb.nextToken();
+                listDb.add(new NoSqlDB(nameTable));
                 // вывоз соответствующей функции создания таблицы db
                 break;
             default:
@@ -90,9 +99,6 @@ public class NoSqlParser
         return result;
     }
     public static void main(String[] args) {
-        String sql = "SELECT" ;
-        NoSqlParser nsp = new NoSqlParser();
-        nsp.execute(sql);
 
     }
 }
