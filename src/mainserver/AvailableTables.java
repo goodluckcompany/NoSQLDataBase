@@ -12,12 +12,12 @@ public class AvailableTables {
     Vector<Vector<String>> table;
     Vector<String> row;
 
-    AvailableTables(){//инициализация списка таблиц, считываем из файла
+    AvailableTables(){//РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЃРїРёСЃРєР° С‚Р°Р±Р»РёС†, СЃС‡РёС‚С‹РІР°РµРј РёР· С„Р°Р№Р»Р°
         table = new Vector<Vector<String>>();
         Vector<String> vs;
         String line;
 
-        try {//пытаемся открыть файл для чтения
+        try {//РїС‹С‚Р°РµРјСЃСЏ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» РґР»СЏ С‡С‚РµРЅРёСЏ
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
             StringBuilder sb = null;
 
@@ -47,7 +47,11 @@ public class AvailableTables {
         }
     }
 
-    public void addTable(String tableName, String mainServerIP, String reserveServerIP){//добавить таблицу в список таблиц
+    public int addTable(String tableName, String mainServerIP, String reserveServerIP){//РґРѕР±Р°РІРёС‚СЊ С‚Р°Р±Р»РёС†Сѓ РІ СЃРїРёСЃРѕРє С‚Р°Р±Р»РёС†
+        for(int i = 0; i < table.size(); i++){
+            if(table.get(i).get(0).equals(tableName))
+                return -1; //РІРѕР·РІСЂР°С‰Р°РµС‚ -1, РµСЃР»Рё С‚Р°РєР°СЏ С‚Р°Р±Р»РёС†Р° СѓР¶Рµ РµСЃС‚СЊ РІ СЃРїРёСЃРєРµ
+        }
         row = new Vector<String>();
         StringBuilder sb = new StringBuilder();
         sb.append(tableName + ',' + mainServerIP + ',' + reserveServerIP + "\r\n");
@@ -55,9 +59,10 @@ public class AvailableTables {
         row.add(mainServerIP);
         row.add(reserveServerIP);
         table.add(row);
+        return 0;
     }
 
-    public void removeTable(String tableName){//удалить таблицу из списка таблиц
+    public void removeTable(String tableName){//СѓРґР°Р»РёС‚СЊ С‚Р°Р±Р»РёС†Сѓ РёР· СЃРїРёСЃРєР° С‚Р°Р±Р»РёС†
         for(int i = 0; i < table.size(); i++){
             if (table.get(i).get(0).equals(tableName))
                 table.remove(i);
@@ -65,9 +70,9 @@ public class AvailableTables {
     }
 
 
-    public void saveTable(){//запись в файл таблицы
+    public void saveTable(){//Р·Р°РїРёСЃСЊ РІ С„Р°Р№Р» С‚Р°Р±Р»РёС†С‹
         FileWriter fw;
-        try { //Пытаемся открыть файл на запись
+        try { //РџС‹С‚Р°РµРјСЃСЏ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» РЅР° Р·Р°РїРёСЃСЊ
             fw = new FileWriter(new File(fileName));
             StringBuilder sb = new StringBuilder();
 
@@ -75,8 +80,8 @@ public class AvailableTables {
                 sb.append(table.get(i).get(0) + ',' + table.get(i).get(1) + ',' + table.get(i).get(2) + "\r\n");
             }
 
-            try { //Пытаемся писать в файл
-                fw.write(sb.toString()); //записывем собранную строку в файл
+            try { //РџС‹С‚Р°РµРјСЃСЏ РїРёСЃР°С‚СЊ РІ С„Р°Р№Р»
+                fw.write(sb.toString()); //Р·Р°РїРёСЃС‹РІРµРј СЃРѕР±СЂР°РЅРЅСѓСЋ СЃС‚СЂРѕРєСѓ РІ С„Р°Р№Р»
                 fw.close();
             }catch (IOException e) {
                 e.printStackTrace();
@@ -87,7 +92,7 @@ public class AvailableTables {
         }
     }
 
-    public String getMainServerIP(String tableName){//возвращает IP главного сервера для таблицы
+    public String getMainServerIP(String tableName){//РІРѕР·РІСЂР°С‰Р°РµС‚ IP РіР»Р°РІРЅРѕРіРѕ СЃРµСЂРІРµСЂР° РґР»СЏ С‚Р°Р±Р»РёС†С‹
         String mainServerIP = "";
         for(int i = 0; i < table.size(); i++){
             if (table.get(i).get(0).equals(tableName))
@@ -96,7 +101,7 @@ public class AvailableTables {
         return mainServerIP;
     }
 
-    public String getReserveServerIP(String tableName){ //возвращает IP резервного сервера для таблицы
+    public String getReserveServerIP(String tableName){ //РІРѕР·РІСЂР°С‰Р°РµС‚ IP СЂРµР·РµСЂРІРЅРѕРіРѕ СЃРµСЂРІРµСЂР° РґР»СЏ С‚Р°Р±Р»РёС†С‹
         String reserveServerIP = "";
         for(int i = 0; i < table.size(); i++){
             if (table.get(i).get(0).equals(tableName))
