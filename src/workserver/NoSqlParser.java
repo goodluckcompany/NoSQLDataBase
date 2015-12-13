@@ -19,6 +19,10 @@ public class NoSqlParser
         sb = new StringTokenizer(sql);
         start = sb.nextToken();
         switch (start){
+            case "size" : start = "size";
+                items.ResponseItemList.add(new Item("size",Long.toString(listDb.get(0).getFileSize())));
+                System.out.println(listDb.get(0).getDbName());
+                break;
             case "output" : start = "output";
                 System.out.println(start);
                 start = sb.nextToken();
