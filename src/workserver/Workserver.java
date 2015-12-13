@@ -75,8 +75,6 @@ public class Workserver {
             System.out.println("ois");
         }
 
-
-
             System.out.println("Connect to be!");
 
             while (!socket.isClosed()){
