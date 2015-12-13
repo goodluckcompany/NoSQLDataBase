@@ -18,6 +18,9 @@ public class  Request  implements Serializable {
         return answer;
     }
 
+    public void setnosqlR(String str){
+        nosqlR = str;
+    }
     public String getNosqlR(){
         return nosqlR;
     }
