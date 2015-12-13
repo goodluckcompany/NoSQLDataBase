@@ -25,20 +25,11 @@ public class ThreadWs implements Runnable {
         req = r;
         ipAdress = r.getTo();
         oos = _oos;
-
+        listR = items;
         String nosqlR = req.getNosqlR();
-        NoSqlDB db = new NoSqlDB("table2");
         NoSqlParser nsp = new NoSqlParser();
-        nsp.execute("create tabl1", listDb, items);
-        listDb.add(db);
-        listDb.get(0).append("Nikita", "Main");
-        listDb.get(0).append("Oleg", "Wserver");
-        listDb.get(0).append("Alexey", "NoSqlDb");
-        listR = listDb.get(0).getAll();
-        String res = listR.ResponseItemList.get(0).toString();
-        String res2 = res + listR.ResponseItemList.get(1).toString();
-        System.out.println(res);
-        System.out.println(res2);
+        nsp.execute(nosqlR, listDb, items);
+
 
         t = new Thread(this);
         t.start();
@@ -49,7 +40,7 @@ public class ThreadWs implements Runnable {
         try {
             System.out.println("Вывел пришедший реквест");
             System.out.println(req);
-            oos.writeObject(new Request(ipAdress,req.getNosqlR() + "FINISH"));
+            oos.writeObject(listR);
 
         } catch (IOException e) {
             e.printStackTrace();
