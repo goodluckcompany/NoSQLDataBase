@@ -12,10 +12,11 @@ import java.util.LinkedList;
  * Created by homie on 22.11.2015.
  */
 public class MainServer {
-    volatile ArrayList<InputOutputStreamWorkserver> listOfWorkserver;
+    volatile ArrayList<InputOutputStreamWorkserver> listOfWorkserver;/*ѕеременна€ хранит список –абочих серверов*/
     Iterator<InputOutputStreamWorkserver> itr;
 
-    volatile LinkedList<Socket> listOfClient;
+    volatile LinkedList<Socket> listOfClient;/*’ранит список подключенных на данный момент клиентов,
+    у которых обрабатываетс€ запрос*/
 
     BufferedReader bufread = null;
     BufferedReader consoleInput = null;
@@ -23,15 +24,22 @@ public class MainServer {
     int WORK_PORT = 6667;
     int CLIENT_PORT = 6661;
     int MAX_QUEUE = 100;
+    volatile int amountWorkserver = 1;/*—читает сколько всего рабочих серверов запущенно, если значение более 1, то возращает
+         true иначе возращает false.*/
+    volatile int amountInaccessibleServer = 0;/*—читает количество недоступных серверов, если значение более 1, то
+        возращ€ет False, в противном случает True*/
     Request r;
 
-    volatile Socket tempSocket;
-    ServerSocket socketToClient;
+    volatile Socket tempSocket;/*’ранит сокет только что подключившегос€ клиента, до передачи его в другой поток*/
+    ServerSocket socketToClient;/*—ерверный сокет, который ожидает подключени€ новых клиентов*/
 
     public static void main(String[] args) throws IOException {
         MainServer ms = new MainServer();
 
-        ms.loadListWorkServers();
+        if(!ms.loadListWorkServers()){
+            ms.closeConnectionToListWorkserver();
+            System.exit(0);
+        };
         ms.showListWorkServers();
         ms.initThreadISFromClient();
 
@@ -55,7 +63,8 @@ public class MainServer {
         }
     }
 
-    public void loadListWorkServers(String pathToListWorkserver){
+    public boolean loadListWorkServers(String pathToListWorkserver){/*”станавливает соединение с рабочими серверами из
+    файла*/
         try{
             bufread = new BufferedReader(new FileReader(pathToListWorkserver));
             while ((cString = bufread.readLine()) != null)
@@ -69,39 +78,48 @@ public class MainServer {
                 catch (Exception e)
                 {
                     System.err.println("Do not add "+cString);
+                    amountInaccessibleServer++;
                 }
-
+                if(amountInaccessibleServer > 1) {
+                    System.err.println("Amount inaccessible server is more than one!");
+                    return false;
+                };
+                amountWorkserver++;
             }
+            if(amountWorkserver < 2) {
+                System.err.println("Amount work server less than two!");
+                return false;
+            }
+            return true;
         }
         catch (IOException e)
         {
             System.err.println("Can not find or read: "+ pathToListWorkserver);
+            return false;
         }
-        finally
-        {
-            try
-            {
+        finally {
+            try {
                 if (bufread != null)
                     bufread.close();
-            } catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-    public void loadListWorkServers(){
-        loadListWorkServers("listworkservers.lst");
+    public boolean loadListWorkServers(){/*ѕерегруженна€ функци€ соединени€ с рабочими серверами*/
+        return loadListWorkServers("listworkservers.lst");
     }
 
-    public void showListWorkServers(){
+    public void showListWorkServers(){/*¬ыводит список сокектов всех соединенных серверов*/
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             System.out.println(itr.next().getSocket());
         }
     }
 
-    public InputOutputStreamWorkserver getItemListOfWorkserver(String _ipAdress){
+    public InputOutputStreamWorkserver getItemListOfWorkserver(String _ipAdress){/*¬озращает –абочий сервер по
+    определенному IP адресу.*/
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             InputOutputStreamWorkserver tmp = itr.next();
@@ -110,7 +128,8 @@ public class MainServer {
         return null;
     }
 
-    public boolean isItemListOfWorkserver(String _ipAdress) {
+    public boolean isItemListOfWorkserver(String _ipAdress) { /*ќпределение наличи€ –абочего сервера с определенным
+    IP адресом */
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             InputOutputStreamWorkserver tmp = itr.next();
@@ -119,7 +138,8 @@ public class MainServer {
         return false;
     }
 
-    public boolean isItemListOfClient(String _ipAdress){
+    public boolean isItemListOfClient(String _ipAdress){/*ќпредел€ет наличие соединени€ с клиентом с определенным
+    IP адресом*/
         Iterator<Socket> iterator = listOfClient.iterator();
         while (iterator.hasNext()){
             Socket tmp = iterator.next();
@@ -129,7 +149,7 @@ public class MainServer {
         return false;
     }
 
-    public Socket getItemListOfClient(String _ipAdress){
+    public Socket getItemListOfClient(String _ipAdress){/*¬озращает сокет клиента с определенным IP адресом*/
         Iterator<Socket> iterator = listOfClient.iterator();
         while (iterator.hasNext()){
             Socket tmp = iterator.next();
@@ -138,10 +158,23 @@ public class MainServer {
         return null;
     }
 
-    public void initThreadISFromClient(){
+    public void initThreadISFromClient(){/*»нициализирует потоки принимающие сообщени€ с Workserver*/
         itr = listOfWorkserver.iterator();
         while (itr.hasNext()){
-            new ThreadInputStreamFormWorkserver(this,itr.next());
+            new ThreadInputStreamFromWorkserver(this,itr.next());
+        }
+    }
+
+    public void closeConnectionToListWorkserver(){/*«акрывает все соединени€ с рабоими серверами*/
+        itr = listOfWorkserver.iterator();
+        Socket tmpSck;
+        while(itr.hasNext()) {
+            try {
+                tmpSck = itr.next().getSocket();
+                tmpSck.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
