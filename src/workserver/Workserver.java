@@ -31,11 +31,6 @@ public class Workserver {
     }
 
     Workserver(){
-
-
-
-
-
         try {
             socketToMain = new ServerSocket(PORT,MAX_QUEUE);
         } catch (IOException e) {
