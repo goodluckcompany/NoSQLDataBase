@@ -30,6 +30,11 @@ public class ThreadInputStreamFromWorkserver implements Runnable {
                 ms.amountInaccessibleServer++;
                 IOStreamWorkserver.status = 0;
                 System.err.println("Connection with " + IOStreamWorkserver.getSocket() + " is lost!");
+                try {
+                    IOStreamWorkserver.socket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 break;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -54,6 +59,7 @@ public class ThreadInputStreamFromWorkserver implements Runnable {
             }
         if(ms.amountInaccessibleServer > 1){
             System.err.println("Amount inaccessible server is more than one!");
+            ms.closeConnectionToListWorkserver();
             System.exit(0);
         }
     }

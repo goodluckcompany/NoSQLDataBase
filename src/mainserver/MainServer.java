@@ -30,6 +30,8 @@ public class MainServer {
         возращяет False, в противном случает True*/
     Request r;
 
+    AvailableTables availableTables;
+
     volatile Socket tempSocket;/*Хранит сокет только что подключившегося клиента, до передачи его в другой поток*/
     ServerSocket socketToClient;/*Серверный сокет, который ожидает подключения новых клиентов*/
 
@@ -61,6 +63,7 @@ public class MainServer {
         } catch (IOException e) {
             System.err.println("Error with create socket of client!");
         }
+        availableTables = new AvailableTables();
     }
 
     public boolean loadListWorkServers(String pathToListWorkserver){/*Устанавливает соединение с рабочими серверами из
