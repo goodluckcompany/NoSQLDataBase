@@ -18,18 +18,15 @@ public class ThreadWs implements Runnable {
     Thread t;
     public ObjectOutputStream oos;
 
-    public ResponseItem listR = new ResponseItem();
-
     ThreadWs(Request r, ObjectOutputStream _oos,List<NoSqlDB> listDb, ResponseItem items){
         System.out.println("Зашел в конструктор потока");
         req = r;
         ipAdress = r.getTo();
         oos = _oos;
-        listR = items;
         String nosqlR = req.getNosqlR();
         NoSqlParser nsp = new NoSqlParser();
         nsp.execute(nosqlR, listDb, items);
-
+        req.setReqItems(items);
 
         t = new Thread(this);
         t.start();
@@ -40,8 +37,7 @@ public class ThreadWs implements Runnable {
         try {
             System.out.println("Вывел пришедший реквест");
             System.out.println(req);
-            oos.writeObject(listR);
-
+            oos.writeObject(req);
         } catch (IOException e) {
             e.printStackTrace();
         }
