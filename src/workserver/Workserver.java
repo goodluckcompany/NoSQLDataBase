@@ -24,6 +24,7 @@ public class Workserver {
     int PORT = 6667;
     int MAX_QUEUE = 100;
     public List <NoSqlDB> listDb = new LinkedList<>();
+    public ResponseItem listR = new ResponseItem();
     Request r;
 
     public static void main(String[] args){
@@ -80,7 +81,7 @@ public class Workserver {
             while (!socket.isClosed()){
                 try {
                     System.out.println("Создал поток");
-                    new ThreadWs((Request)ois.readObject(), oos,listDb);
+                    new ThreadWs((Request)ois.readObject(), oos,listDb,listR);
                     // r = (Request)ois.readObject();
 
 
