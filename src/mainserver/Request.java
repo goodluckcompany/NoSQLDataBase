@@ -1,5 +1,7 @@
 package mainserver;
 
+import workserver.ResponseItem;
+
 import java.io.Serializable;
 
 /**
@@ -7,9 +9,15 @@ import java.io.Serializable;
  */
 public class  Request  implements Serializable {
     String to;
-    String data;
     String nosqlR;
     String answer;
+    ResponseItem reqItems;
+    public void setReqItems(ResponseItem items){
+        reqItems = items;
+    }
+    public ResponseItem getReqItems(){
+        return reqItems;
+    }
     boolean success = false;
     public boolean isSuccess(){
         return success;
@@ -25,19 +33,14 @@ public class  Request  implements Serializable {
         return nosqlR;
     }
 
-    public Request(String _to,String _data){
+    public Request(String _to,String _nosqlR){
         to = _to;
-        data = _data;
-        nosqlR = "create table1";
+        nosqlR = _nosqlR;
     }
 
     @Override
     public String toString() {
-        return getTo() + " : " + getData();
-    }
-
-    public String getData() {
-        return data;
+        return getTo() + " : " + getNosqlR();
     }
 
     public String getTo() {

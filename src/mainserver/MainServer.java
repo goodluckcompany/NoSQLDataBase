@@ -146,7 +146,6 @@ public class MainServer {
         Iterator<Socket> iterator = listOfClient.iterator();
         while (iterator.hasNext()){
             Socket tmp = iterator.next();
-            System.out.println(tmp.getInetAddress().toString() + " == /" +_ipAdress);
             if(tmp.getInetAddress().toString().equals("/"+_ipAdress)) return true;
         }
         return false;

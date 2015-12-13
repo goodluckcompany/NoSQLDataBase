@@ -197,6 +197,12 @@ public class NoSqlDB {
         return items;
     }
 
+    //Удаляет файл базы данных
+    public void deleteFile(){
+        File tableFile = new File(dir);
+        tableFile.delete();
+    }
+
 
 
 
@@ -240,6 +246,8 @@ public class NoSqlDB {
         System.out.println(jsonDB);
         Hashtable<String,String> test2 = new Gson().fromJson(jsonDB,Hashtable.class);
         System.out.println(test2.toString());
+
+        db.deleteFile();
 
     }
 
