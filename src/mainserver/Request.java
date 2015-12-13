@@ -1,5 +1,7 @@
 package mainserver;
 
+import workserver.ResponseItem;
+
 import java.io.Serializable;
 
 /**
@@ -9,6 +11,13 @@ public class  Request  implements Serializable {
     String to;
     String nosqlR;
     String answer;
+    ResponseItem reqItems;
+    public void setReqItems(ResponseItem items){
+        reqItems = items;
+    }
+    public ResponseItem getReqItems(){
+        return reqItems;
+    }
     boolean success = false;
     public boolean isSuccess(){
         return success;
