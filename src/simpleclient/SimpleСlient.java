@@ -21,13 +21,22 @@ public class Simple—lient {
         sc.sendRequest(new Request("172.18.13.84","create cash"));
         sc.waitResponse();
 
-        sc.sendRequest(new Request("172.18.13.84","add key "));
+        sc.sendRequest(new Request("172.18.13.84","add key nikita value 100$ cash"));
         sc.waitResponse();
 
-        sc.sendRequest(new Request("172.18.13.84","Create CASH"));
+        sc.sendRequest(new Request("172.18.13.84","add key oleg value 150$ cash"));
         sc.waitResponse();
 
-        sc.sendRequest(new Request("172.18.13.84","Create CASH"));
+        sc.sendRequest(new Request("172.18.13.84","download cash"));
+        sc.waitResponse();
+
+        sc.sendRequest(new Request("172.18.13.84","delete key oleg cash"));
+        sc.waitResponse();
+
+        sc.sendRequest(new Request("172.18.13.84","delete all key value 100$ cash"));
+        sc.waitResponse();
+
+        sc.sendRequest(new Request("172.18.13.84","delete cash"));
         sc.waitResponse();
     }
 

@@ -49,7 +49,7 @@ public class ThreadWs implements Runnable {
         try {
             System.out.println("Вывел пришедший реквест");
             System.out.println(req);
-            oos.writeObject(new Request(ipAdress,req.getData() + "FINISH"));
+            oos.writeObject(new Request(ipAdress,req.getNosqlR() + "FINISH"));
 
         } catch (IOException e) {
             e.printStackTrace();

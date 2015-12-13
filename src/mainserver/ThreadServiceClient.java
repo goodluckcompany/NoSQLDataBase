@@ -30,7 +30,7 @@ public class ThreadServiceClient implements Runnable {
             ois = new ObjectInputStream(socket.getInputStream());
             Request r = (Request)ois.readObject();
 
-            String stringRequest = r.getData();
+            String stringRequest = r.getNosqlR();
             String[] stringListRequest = stringRequest.split(" ");
 
             String ipAdressOfClient = socket.getInetAddress().toString();
@@ -41,8 +41,8 @@ public class ThreadServiceClient implements Runnable {
                 {
                     ms.availableTables.addTable(stringListRequest[1],"172.18.13.84","172.18.27.29");
                     ms.availableTables.saveTable();
-                    ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(new Request(ipAdressOfClient,r.getData()));
-                    ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                    ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
+                    ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                     break;
                 }
                 case "output":
@@ -51,10 +51,10 @@ public class ThreadServiceClient implements Runnable {
                     String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length-1]);
                     String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
                     if(ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON){
-                        ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                        ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                     }
                     else if(ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                        ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                        ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                     }
                     break;
                 }
@@ -63,10 +63,10 @@ public class ThreadServiceClient implements Runnable {
                     String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length-1]);
                     String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
                     if(ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON){
-                        ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                        ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                     }
                     if(ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                        ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                        ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                     }
                     break;
                 }
@@ -77,10 +77,10 @@ public class ThreadServiceClient implements Runnable {
                         String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length-1]);
                         String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
                         if(ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON){
-                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                         }
                         if(ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                         }
                         break;
                     }
@@ -91,10 +91,10 @@ public class ThreadServiceClient implements Runnable {
                         ms.availableTables.saveTable();
 
                         if(ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON){
-                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                         }
                         if(ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getData()));
+                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient,r.getNosqlR()));
                         }
                     }
                     break;
