@@ -1,5 +1,7 @@
 package mainserver;
 
+import com.sun.org.apache.xerces.internal.xs.StringList;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -25,6 +27,12 @@ public class ThreadServiceClient implements Runnable {
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             Request r = (Request)ois.readObject();
+
+            String stringRequest = r.getData();
+            String[] stringListRequest = stringRequest.split(" ");
+            System.out.println(stringListRequest[0]);
+            System.out.println(stringListRequest[1]);
+
             String ipAdressOfClient = socket.getInetAddress().toString();
             ipAdressOfClient = ipAdressOfClient.replace("/","");
             if(ms.isItemListOfWorkserver(r.getTo())){
