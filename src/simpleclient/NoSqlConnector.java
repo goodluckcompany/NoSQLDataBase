@@ -40,7 +40,7 @@ public class NoSqlConnector {
     }
     
     Request sendCommand(String command){
-        response.setNosqlR(command);
+        response = new Request(socket.getInetAddress().toString(),command);
         if(socket.isConnected()){
             try{
                 oos.writeObject(response);
