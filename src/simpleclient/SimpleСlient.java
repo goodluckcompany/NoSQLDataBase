@@ -18,6 +18,15 @@ public class Simple—lient {
 
     public static void main(String[] args){
         Simple—lient sc = new Simple—lient();
+        sc.sendRequest(new Request("172.18.13.84","create cash"));
+        sc.waitResponse();
+
+        sc.sendRequest(new Request("172.18.13.84","add key "));
+        sc.waitResponse();
+
+        sc.sendRequest(new Request("172.18.13.84","Create CASH"));
+        sc.waitResponse();
+
         sc.sendRequest(new Request("172.18.13.84","Create CASH"));
         sc.waitResponse();
     }
