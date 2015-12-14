@@ -1,12 +1,9 @@
 package workserver;
 
-import mainserver.MainServer;
 import mainserver.Request;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -26,23 +23,15 @@ public class ThreadWs implements Runnable {
         oos = _oos;
         String nosqlR = req.getNosqlR();
         NoSqlParser nsp = new NoSqlParser();
-        ResponseItem its;
-        //Удалить
-        System.out.println(nosqlR);
-        System.out.println(req.getNameTable());
-        //Удалить
+        ResponseItem is;
         int numtable = tableNum(req.getNameTable(),listDb);
-        //Удалить
-        System.out.println(numtable);
-        //Удалить
-
         if (numtable == -1){
-            its = nsp.execute(nosqlR,listDb,items);
+            is = nsp.execute(nosqlR,listDb,items);
         }else {
-            its = nsp.execute(nosqlR, listDb.get(numtable), items);
-            items = its;
+            is = nsp.execute(nosqlR, listDb.get(numtable), items);
         }
-        req.setReqItems(items);
+
+        req.setReqItems(is);
         t = new Thread(this);
         t.start();
     }
@@ -51,15 +40,16 @@ public class ThreadWs implements Runnable {
     public void run() {
         try {
             System.out.println("Вывел пришедший реквест");
+            oos.flush();
+
             oos.writeObject(req);
+            oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
-    public String getIpAdress() {
-        return ipAdress;
-    }
+
     public int tableNum(String nametable,List<NoSqlDB> listDb){
         int i = 0;
         NoSqlDB ndb = null;
