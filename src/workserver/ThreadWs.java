@@ -29,9 +29,10 @@ public class ThreadWs implements Runnable {
 
         ListOfTables lt = new ListOfTables();
         list = lt.getTables();
-
-        for(String s: list){
-            listDb.add(new NoSqlDB(s));
+        if (!list.isEmpty()) {
+            for (String s : list) {
+                listDb.add(new NoSqlDB(s));
+            }
         }
 
         int numtable = tableNum(req.getNameTable(),listDb);
