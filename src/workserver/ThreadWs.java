@@ -34,7 +34,6 @@ public class ThreadWs implements Runnable {
                 listDb.add(new NoSqlDB(s));
             }
         }
-
         int numtable = tableNum(req.getNameTable(),listDb);
 
         if (numtable == -1){
