@@ -42,7 +42,7 @@ public class ThreadServiceClient implements Runnable {
                 ipAdressOfClient = ipAdressOfClient.replace("/", "");
 
                 r.to = ipAdressOfClient;
-                
+
                 switch (stringListRequest[0].toLowerCase()) {
                     case "create": {
                         System.out.println(r.getNosqlR() + " -> create");

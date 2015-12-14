@@ -27,7 +27,7 @@ public class Simple—lient {
         command = "";
         conn = new NoSqlConnector("172.18.27.29");
         if(conn.establishConnection() == 0){
-            /*System.out.println("Input command:");
+            System.out.println("Input command:");
             try {
                 command = br.readLine();
             } catch (IOException e) {
@@ -35,20 +35,20 @@ public class Simple—lient {
             }
             while(!command.equalsIgnoreCase("stop")) {
                 req = conn.sendCommand(command);
-                System.out.println(req.getReqItems().ResponseItemList);
+                System.out.println(req);
                 System.out.println("Input command:");
                 try {
                     command = br.readLine();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }*/
-            int key = 0;
+            }
+            /*int key = 0;
             req = conn.sendCommand("create table_m");
             while (key < 500){
                 req = conn.sendCommand("add key item"+key+" value "+key+" table_m");
                 key++;
-            }
+            }*/
             conn.breakConnection();
         }
     }
