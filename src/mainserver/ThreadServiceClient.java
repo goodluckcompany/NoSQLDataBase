@@ -4,6 +4,7 @@ import com.sun.org.apache.xerces.internal.xs.StringList;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
@@ -42,16 +43,23 @@ public class ThreadServiceClient implements Runnable {
                 ipAdressOfClient = ipAdressOfClient.replace("/", "");
 
                 r.to = ipAdressOfClient;
+                r.setIsOriginal(false);
 
                 switch (stringListRequest[0].toLowerCase()) {
                     case "create": {
                         System.out.println(r.getNosqlR() + " -> create");
                         if(ms.availableTables.addTable(stringListRequest[1], "172.18.13.84", "172.18.27.29") == 0 ) {
                             ms.availableTables.saveTable();
+                            r.setIsOriginal(true);
                             ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(r);
+                            r.setIsOriginal(false);
                             ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(r);
                         }else{
-
+                            ObjectOutputStream oos = null;
+                            oos = new ObjectOutputStream(socket.getOutputStream());
+                            oos.flush();
+                            r.setNosqlR("TABLE CRATE YET!");
+                            oos.writeObject(r);
                         }
                         break;
                     }
@@ -65,8 +73,10 @@ public class ThreadServiceClient implements Runnable {
                         String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
                         if(!ipMainServer.equalsIgnoreCase("") && !ipReserveServer.equalsIgnoreCase("")){
                             if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                r.setIsOriginal(true);
                                 ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(r);
                             } else if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                r.setIsOriginal(true);
                                 ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(r);
                             }
                         }
@@ -78,9 +88,14 @@ public class ThreadServiceClient implements Runnable {
                         String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
                         if(!ipMainServer.equalsIgnoreCase("") && !ipReserveServer.equalsIgnoreCase("")){
                             if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                r.setIsOriginal(true);
                                 ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(r);
                             }
-                            if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                            if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON ) {
+                                if(r.getIsOriginal()){
+                                    r.setIsOriginal(false);
+                                }
+                                else r.setIsOriginal(true);
                                 ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(r);
                             }
                         }
@@ -93,9 +108,14 @@ public class ThreadServiceClient implements Runnable {
                             String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
                             if(!ipMainServer.equalsIgnoreCase("") && !ipReserveServer.equalsIgnoreCase("")) {
                                 if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                    r.setIsOriginal(true);
                                     ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(r);
                                 }
                                 if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                    if(r.getIsOriginal()){
+                                        r.setIsOriginal(false);
+                                    }
+                                    else r.setIsOriginal(true);
                                     ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(r);
                                 }
                             }
@@ -107,9 +127,14 @@ public class ThreadServiceClient implements Runnable {
                             ms.availableTables.saveTable();
                             if(!ipMainServer.equalsIgnoreCase("") && !ipReserveServer.equalsIgnoreCase("")) {
                                 if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                    r.setIsOriginal(true);
                                     ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(r);
                                 }
                                 if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                    if(r.getIsOriginal()){
+                                        r.setIsOriginal(false);
+                                    }
+                                    else r.setIsOriginal(true);
                                     ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(r);
                                 }
                             }
@@ -120,8 +145,8 @@ public class ThreadServiceClient implements Runnable {
             }
         } catch (IOException e) {
             try {
-                ms.listOfClient.remove(socket);
-                socket.getInputStream().close();
+                //ms.listOfClient.remove(socket);
+   //             socket.getInputStream().close();
 //                socket.getOutputStream().close();
                 socket.close();
             } catch (IOException e1) {

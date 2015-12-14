@@ -13,6 +13,7 @@ public class  Request  implements Serializable {
     String to;
     String nosqlR;
     String answer;
+    boolean isOriginal;
     ResponseItem reqItems;
     String nameTable = "";
 
@@ -22,6 +23,14 @@ public class  Request  implements Serializable {
 
     public void setNameTable(String _nameTable){
         nameTable = _nameTable;
+    }
+
+    public boolean getIsOriginal(){
+        return isOriginal;
+    }
+
+    public void setIsOriginal(boolean _isOriginal){
+        isOriginal = _isOriginal;
     }
 
     public void setReqItems(ResponseItem items){

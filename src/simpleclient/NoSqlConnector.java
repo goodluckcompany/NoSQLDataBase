@@ -40,7 +40,6 @@ public class NoSqlConnector {
     }
     
     Request sendCommand(String command){
-        response = new Request(socket.getInetAddress().toString(),command);
         if(socket.isConnected()){
             try{
                 oos.flush();
@@ -54,12 +53,15 @@ public class NoSqlConnector {
             } catch (IOException e) {
                 System.err.println(e);
             }
+
             try{
-                response = (Request) ois.readObject();
+                response = (Request)ois.readObject();
             } catch (ClassNotFoundException e) {
-                System.err.println(e);
+               // System.err.println(e);
+                System.err.println("I was here 0");
             } catch (IOException e) {
-                System.err.println(e);
+              //  System.err.println(e);
+                System.err.println("I was here 1");
             }
         }
         return response;
