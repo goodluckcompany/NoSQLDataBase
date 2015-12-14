@@ -29,12 +29,13 @@ public class ThreadWs implements Runnable {
         ResponseItem its;
         int numtable = tableNum(req.getNameTable(),listDb);
         if (numtable == -1){
-           its = nsp.execute(nosqlR,listDb, items);
+            its = nsp.execute(nosqlR,listDb, items);
         }else {
-           its = nsp.execute(nosqlR, listDb.get(numtable), items);
+            its = nsp.execute(nosqlR, listDb.get(numtable), items);
+            items = its;
+            System.out.println(items.ResponseItemList.get(0).toString());
         }
-        items = its;
-        System.out.println(items.ResponseItemList.get(0).toString());
+
         req.setReqItems(items);
         System.out.println(req.getReqItems().ResponseItemList.get(0).toString());
         System.out.println(req.toString());
