@@ -33,7 +33,6 @@ public class ThreadWs implements Runnable {
             nsp.execute(nosqlR, listDb.get(numtable), items);
         }
         req.setReqItems(items);
-
         t = new Thread(this);
         t.start();
     }
@@ -59,9 +58,11 @@ public class ThreadWs implements Runnable {
         while(itr.hasNext()){
             ndb = itr.next();
             if(ndb.getDbName().equals(nametable)){
+                System.out.println(nametable);
+                System.out.println(i);
                 return i;
             }
-
+            i++;
         }
         return -1;
     }
