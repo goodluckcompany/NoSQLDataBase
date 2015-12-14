@@ -62,15 +62,18 @@ public class AvailableTables {
         return 0;
     }
 
-    public void removeTable(String tableName){//удалить таблицу из списка таблиц
+    public int removeTable(String tableName){//удалить таблицу из списка таблиц
         for(int i = 0; i < table.size(); i++){
-            if (table.get(i).get(0).equals(tableName))
+            if (table.get(i).get(0).equals(tableName)) {
                 table.remove(i);
+                return 0;
+            }
         }
+        return 1; //таблица не была удалена
     }
 
 
-    public void saveTable(){//запись в файл таблицы
+    public int saveTable(){//запись в файл таблицы
         FileWriter fw;
         try { //Пытаемся открыть файл на запись
             fw = new FileWriter(new File(fileName));
@@ -85,11 +88,14 @@ public class AvailableTables {
                 fw.close();
             }catch (IOException e) {
                 e.printStackTrace();
+                return 2; //ошибка записи в файл
             }
 
         }catch (IOException e) {
             e.printStackTrace();
+            return 1; //ошибка при открытии файла
         }
+        return 0;
     }
 
     public String getMainServerIP(String tableName){//возвращает IP главного сервера для таблицы
