@@ -1,5 +1,6 @@
 package workserver;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -18,12 +19,32 @@ public class NoSqlParser
     public ResponseItem execute (String sql,List<NoSqlDB> listDb, ResponseItem items){
         sb = new StringTokenizer(sql);
         start = sb.nextToken();
+        //Удалить
+        System.out.println("LOL0");
+        //Удалить
         if (start.equals("create")){
+            //Удалить
+            System.out.println("LOL1");
+            //Удалить
             nameTable = sb.nextToken();
+            
             listDb.add(new NoSqlDB(nameTable));
+
+            //Удалить
+            System.out.println(listDb.get(0).getDbName());
+            System.out.println("LOL2");
+            //Удалить
             result = "success";
         }
-        else result = "error";
+        else {
+            //Удалить
+            System.out.println("LOL3");
+            //Удалить
+            result = "error";
+        }
+        //Удалить
+        System.out.println("LOL4");
+        //Удалить
         return items;
     }
     public ResponseItem execute(String sql,NoSqlDB db, ResponseItem items){

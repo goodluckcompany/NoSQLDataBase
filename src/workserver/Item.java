@@ -1,9 +1,11 @@
 package workserver;
 
+import java.io.Serializable;
+
 /**
  * Created by алексей on 29.11.2015.
  */
-public class Item {
+public class Item  implements Serializable {
     private String keyField;
     private String valueField;
 

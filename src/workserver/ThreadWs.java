@@ -27,10 +27,17 @@ public class ThreadWs implements Runnable {
         String nosqlR = req.getNosqlR();
         NoSqlParser nsp = new NoSqlParser();
         ResponseItem its;
+        //Удалить
+        System.out.println(nosqlR);
+        System.out.println(req.getNameTable());
+        //Удалить
         int numtable = tableNum(req.getNameTable(),listDb);
+        //Удалить
         System.out.println(numtable);
+        //Удалить
+
         if (numtable == -1){
-            its = nsp.execute(nosqlR,listDb, items);
+            its = nsp.execute(nosqlR,listDb,items);
         }else {
             its = nsp.execute(nosqlR, listDb.get(numtable), items);
             items = its;
