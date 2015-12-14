@@ -41,13 +41,18 @@ public class ThreadServiceClient implements Runnable {
                 String ipAdressOfClient = socket.getInetAddress().toString();
                 ipAdressOfClient = ipAdressOfClient.replace("/", "");
 
+                r.to = ipAdressOfClient;
+                
                 switch (stringListRequest[0].toLowerCase()) {
                     case "create": {
                         System.out.println(r.getNosqlR() + " -> create");
-                        ms.availableTables.addTable(stringListRequest[1], "172.18.13.84", "172.18.27.29");
-                        ms.availableTables.saveTable();
-                        ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(r);
-                        ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(r);
+                        if(ms.availableTables.addTable(stringListRequest[1], "172.18.13.84", "172.18.27.29") == 0 ) {
+                            ms.availableTables.saveTable();
+                            ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(r);
+                            ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(r);
+                        }else{
+
+                        }
                         break;
                     }
                     case "output":
