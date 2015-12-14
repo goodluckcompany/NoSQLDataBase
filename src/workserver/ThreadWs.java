@@ -34,12 +34,9 @@ public class ThreadWs implements Runnable {
             its = nsp.execute(nosqlR, listDb.get(numtable), items);
             items = its;
             System.out.println(items.ResponseItemList.get(0).toString());
+            System.out.println(req);
         }
-
         req.setReqItems(items);
-        System.out.println(req.getReqItems().ResponseItemList.get(0).toString());
-        System.out.println(req.toString());
-        System.out.println(req);
         t = new Thread(this);
         t.start();
     }
