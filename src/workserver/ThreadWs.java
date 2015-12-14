@@ -28,13 +28,12 @@ public class ThreadWs implements Runnable {
         NoSqlParser nsp = new NoSqlParser();
         ResponseItem its;
         int numtable = tableNum(req.getNameTable(),listDb);
+        System.out.println(numtable);
         if (numtable == -1){
             its = nsp.execute(nosqlR,listDb, items);
         }else {
             its = nsp.execute(nosqlR, listDb.get(numtable), items);
             items = its;
-            System.out.println(items.ResponseItemList.get(0).toString());
-            System.out.println(req);
         }
         req.setReqItems(items);
         t = new Thread(this);
