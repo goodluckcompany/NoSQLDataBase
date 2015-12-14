@@ -39,11 +39,12 @@ public class ThreadWs implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println("Вывел пришедший реквест");
-            oos.flush();
-
-            oos.writeObject(req);
-            oos.flush();
+            if ( req.getIsOriginal()){
+                System.out.println("Вывел пришедший реквест");
+                oos.flush();
+                oos.writeObject(req);
+                oos.flush();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
