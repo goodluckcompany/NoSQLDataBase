@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class ListOfTables {
     private ArrayList<String> tables;
+    private long size;
     private  static String dir;
 
 
@@ -21,6 +22,7 @@ public class ListOfTables {
         }
         dir += File.separator + "Databases";
         tables = new ArrayList<>();
+        size = 0 ;
         update();
 
     }
@@ -38,6 +40,7 @@ public class ListOfTables {
                 String s = fileEntry.getName();
                 if(s.contains(".nosql")) {
                     s = s.replace(".nosql","");
+                    size += fileEntry.length();
                     tables.add(s);
                 }
 
@@ -45,6 +48,8 @@ public class ListOfTables {
         }
     }
 
+
+    public long getSize(){ return size;}
 
     public ArrayList<String> getTables() {
         return tables;
@@ -60,6 +65,9 @@ public class ListOfTables {
         for(String s: tables){
             System.out.println(s);
         }
+
+        long size  = test.getSize();
+        System.out.println(size);
 
 
     }
