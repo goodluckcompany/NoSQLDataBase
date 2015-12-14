@@ -43,13 +43,23 @@ public class ThreadInputStreamFromWorkserver implements Runnable {
                 e.printStackTrace();
             }
 
+
+
             if(ms.isItemListOfClient(r.getTo())) {
                 tmpSocket = ms.getItemListOfClient(r.getTo());
                 ObjectOutputStream oos = null;
                 try {
                     oos = new ObjectOutputStream(tmpSocket.getOutputStream());
                     oos.flush();
-                    oos.writeObject(r);
+
+                    Request req1 = new Request(r.getTo(),r.getNosqlR());
+                    req1.setReqItems(r.getReqItems());
+                    System.out.println(tmpSocket);
+                    System.out.println(r);
+
+                    oos.writeObject(req1);
+                    oos.flush();
+                    
                 } catch (IOException e) {
                     System.err.println(tmpSocket + " has closed!");
                     try {
