@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by Anderson on 26.11.2015.
@@ -25,7 +26,12 @@ public class ThreadWs implements Runnable {
         oos = _oos;
         String nosqlR = req.getNosqlR();
         NoSqlParser nsp = new NoSqlParser();
-        nsp.execute(nosqlR, listDb, items);
+        int numtable = tableNum(req.getNameTable(),listDb);
+        if (numtable == -1){
+            nsp.execute(nosqlR,listDb, items);
+        }else {
+            nsp.execute(nosqlR, listDb.get(numtable), items);
+        }
         req.setReqItems(items);
 
         t = new Thread(this);
@@ -46,5 +52,19 @@ public class ThreadWs implements Runnable {
     public String getIpAdress() {
         return ipAdress;
     }
+    public int tableNum(String nametable,List<NoSqlDB> listDb){
+        int i = 0;
+        NoSqlDB ndb = null;
+        ListIterator<NoSqlDB> itr = listDb.listIterator();
+        while(itr.hasNext()){
+            ndb = itr.next();
+            if(ndb.getDbName().equals(nametable)){
+                return i;
+            }
+
+        }
+        return -1;
+    }
+
 
 }
