@@ -45,22 +45,6 @@ public class Simple—lient {
                 }
             }
 
-            /*
-            req = conn.sendCommand("create 1");
-            System.out.println(req.toString());
-            req = conn.sendCommand("add key car value blue 1");
-            System.out.println(req.toString());
-            req = conn.sendCommand("add key vehicle value red 1");
-            System.out.println(req.toString());
-            req = conn.sendCommand("download 1");
-            System.out.println(req);*/
-
-            /*int key = 0;
-            req = conn.sendCommand("create table_m");
-            while (key < 500){
-                req = conn.sendCommand("add key item"+key+" value "+key+" table_m");
-                key++;
-            }*/
             try {
                 br.readLine();
             } catch (IOException e) {

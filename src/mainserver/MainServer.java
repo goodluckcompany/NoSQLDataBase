@@ -31,9 +31,6 @@ public class MainServer {
         возращяет False, в противном случает True*/
     Request r;
 
-    String currentLess;
-    String currentPreLess;
-
     AvailableTables availableTables;
 
     volatile Socket tempSocket;/*Хранит сокет только что подключившегося клиента, до передачи его в другой поток*/
@@ -130,7 +127,7 @@ public class MainServer {
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             InputOutputStreamWorkserver tmp = itr.next();
-            if(tmp.getIpAdress().equals("/"+_ipAdress)) return tmp;
+            if(tmp.getIpAdress().equals(_ipAdress)) return tmp;
         }
         return null;
     }
@@ -140,7 +137,7 @@ public class MainServer {
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             InputOutputStreamWorkserver tmp = itr.next();
-            if(tmp.getIpAdress().equals("/"+_ipAdress)) return true;
+            if(tmp.getIpAdress().equals(_ipAdress)) return true;
         }
         return false;
     }

@@ -23,6 +23,7 @@ public class  Request  implements Serializable {
     public void setSize(long s){
         size = s;
     }
+
     public String getNameTable(){
         return nameTable;
     }
@@ -42,10 +43,13 @@ public class  Request  implements Serializable {
     public void setReqItems(ResponseItem items){
         reqItems = items;
     }
+
     public ResponseItem getReqItems(){
         return reqItems;
     }
+
     boolean success = false;
+
     public boolean isSuccess(){
         return success;
     }
@@ -53,6 +57,7 @@ public class  Request  implements Serializable {
     public void setNosqlR(String str){
         nosqlR = str;
     }
+
     public String getNosqlR(){
         return nosqlR;
     }
@@ -65,7 +70,6 @@ public class  Request  implements Serializable {
     @Override
     public String toString() {
         String tmp ="";
-        //return getTo() + " : " + getNosqlR();
         if(reqItems != null) {
             Iterator<Item> itr = reqItems.ResponseItemList.iterator();
             while (itr.hasNext()){

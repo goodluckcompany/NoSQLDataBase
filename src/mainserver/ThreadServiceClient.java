@@ -57,14 +57,10 @@ public class ThreadServiceClient implements Runnable {
                             if(ms.listOfWorkserver.get(ms.takenTable).getStatus() == ON )
                             {
                                 reserv = ms.listOfWorkserver.get(ms.takenTable).getIpAdress();
-                                ms.takenTable++;
-                                ms.takenTable = ms.takenTable % ms.listOfWorkserver.size();
                             } else {
                                 ms.takenTable++;
                                 ms.takenTable = ms.takenTable % ms.listOfWorkserver.size();
                                 reserv = ms.listOfWorkserver.get(ms.takenTable).getIpAdress();
-                                ms.takenTable++;
-                                ms.takenTable = ms.takenTable % ms.listOfWorkserver.size();
                             }
                         } else {
                             ms.takenTable++;
@@ -73,13 +69,13 @@ public class ThreadServiceClient implements Runnable {
                             ms.takenTable++;
                             ms.takenTable = ms.takenTable % ms.listOfWorkserver.size();
                             reserv = ms.listOfWorkserver.get(ms.takenTable).getIpAdress();
-                            ms.takenTable++;
-                            ms.takenTable = ms.takenTable % ms.listOfWorkserver.size();
                         }
                         if(ms.availableTables.addTable(stringListRequest[1], main, reserv) == 0 ) {
                             ms.availableTables.saveTable();
+
                             r.setIsOriginal(true);
                             ms.getItemListOfWorkserver(main).oos.writeObject(r);
+
                             r.setIsOriginal(false);
                             ms.getItemListOfWorkserver(reserv).oos.writeObject(r);
                         }else{
@@ -202,7 +198,7 @@ public class ThreadServiceClient implements Runnable {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            //e.printStackTrace();
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
