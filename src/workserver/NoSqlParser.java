@@ -101,7 +101,6 @@ public class NoSqlParser
                 System.out.println(start);
                 nameTable = sb.nextToken();
                 items = db.getAll();
-                System.out.println(items.ResponseItemList.get(0).toString());
                 // вывоз соответствующей функции возвращения таблицы db
                 break;
             case "create": start = "create";
