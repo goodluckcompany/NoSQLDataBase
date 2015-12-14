@@ -76,6 +76,7 @@ public class NoSqlParser
                 if (start.equals("key")){
                     key = sb.nextToken();
                     nameTable = sb.nextToken();
+                    db.delKey(key);
                     // вывоз соответствующей функции удаления ключа в таблице db
                     break;
                 }
@@ -84,7 +85,7 @@ public class NoSqlParser
                         if (sb.nextToken().equals("value")){
                             value = sb.nextToken();
                             nameTable = sb.nextToken();
-                            db.delKey(key);
+                            db.delValue(value);
                             // вывоз соответствующей функции удаления всех ключей с заданным значением в таблице db
                             break;
                         }
