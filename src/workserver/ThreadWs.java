@@ -25,7 +25,7 @@ public class ThreadWs implements Runnable {
         oos = _oos;
         String nosqlR = req.getNosqlR();
         NoSqlParser nsp = new NoSqlParser();
-        ResponseItem is;
+        ResponseItem is = null;
 
         ListOfTables lt = new ListOfTables();
         list = lt.getTables();
@@ -37,8 +37,14 @@ public class ThreadWs implements Runnable {
         int numtable = tableNum(req.getNameTable(),listDb);
 
         if (numtable == -1){
+            if (nosqlR.equals("size")) {
+                r.setSize(lt.getSize());
+            }else
             is = nsp.execute(nosqlR,listDb,items);
         }else {
+            if (nosqlR.equals("size")) {
+                r.setSize(lt.getSize());
+            }else
             is = nsp.execute(nosqlR, listDb.get(numtable), items);
         }
 
