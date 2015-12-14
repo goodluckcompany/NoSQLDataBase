@@ -15,7 +15,7 @@ public class NoSqlParser
     String key = "";
     String value = "";
     String nameTable = "";
-    public String execute (String sql,List<NoSqlDB> listDb, ResponseItem items){
+    public ResponseItem execute (String sql,List<NoSqlDB> listDb, ResponseItem items){
         sb = new StringTokenizer(sql);
         start = sb.nextToken();
         if (start.equals("create")){
@@ -24,9 +24,9 @@ public class NoSqlParser
             result = "success";
         }
         else result = "error";
-        return result;
+        return items;
     }
-    public String execute(String sql,NoSqlDB db, ResponseItem items){
+    public ResponseItem execute(String sql,NoSqlDB db, ResponseItem items){
         sb = new StringTokenizer(sql);
         start = sb.nextToken();
         switch (start){
@@ -101,6 +101,7 @@ public class NoSqlParser
                 System.out.println(start);
                 nameTable = sb.nextToken();
                 items = db.getAll();
+                System.out.println(items.ResponseItemList.get(0).toString());
                 // вывоз соответствующей функции возвращения таблицы db
                 break;
             case "create": start = "create";
@@ -113,7 +114,7 @@ public class NoSqlParser
                 System.out.println("DEF ERROR");
                 break;
         }
-        return result;
+        return items;
     }
     public static void main(String[] args) {
 

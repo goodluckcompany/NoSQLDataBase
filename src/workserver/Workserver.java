@@ -31,21 +31,6 @@ public class Workserver {
 
     Request r;
 
-    public int tableExist(String nametable){
-        int i = 0;
-        NoSqlDB ndb = null;
-        ListIterator<NoSqlDB> itr = listDb.listIterator();
-        while(itr.hasNext()){
-            ndb = itr.next();
-            if(ndb.getDbName().equals(nametable)){
-                numTable = i;
-                return i;
-            }
-
-        }
-        return -1;
-    }
-
     public static void main(String[] args){
         new Workserver();
     }

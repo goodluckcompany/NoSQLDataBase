@@ -26,13 +26,19 @@ public class ThreadWs implements Runnable {
         oos = _oos;
         String nosqlR = req.getNosqlR();
         NoSqlParser nsp = new NoSqlParser();
+        ResponseItem its;
         int numtable = tableNum(req.getNameTable(),listDb);
         if (numtable == -1){
-            nsp.execute(nosqlR,listDb, items);
+           its = nsp.execute(nosqlR,listDb, items);
         }else {
-            nsp.execute(nosqlR, listDb.get(numtable), items);
+           its = nsp.execute(nosqlR, listDb.get(numtable), items);
         }
+        items = its;
+        System.out.println(items.ResponseItemList.get(0).toString());
         req.setReqItems(items);
+        System.out.println(req.getReqItems().ResponseItemList.get(0).toString());
+        System.out.println(req.toString());
+        System.out.println(req);
         t = new Thread(this);
         t.start();
     }
@@ -42,6 +48,7 @@ public class ThreadWs implements Runnable {
         try {
             System.out.println("Вывел пришедший реквест");
             System.out.println(req);
+            System.out.println(req.getReqItems().ResponseItemList.get(0).toString());
             oos.writeObject(req);
         } catch (IOException e) {
             e.printStackTrace();
