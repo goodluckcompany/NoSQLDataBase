@@ -12,11 +12,17 @@ import java.util.Iterator;
 public class  Request  implements Serializable {
     String to;
     String nosqlR;
-    String answer;
+    long size;
     boolean isOriginal;
     ResponseItem reqItems;
     String nameTable = "";
 
+    public long getSize(){
+        return size;
+    }
+    public void setSize(long s){
+        size = s;
+    }
     public String getNameTable(){
         return nameTable;
     }
@@ -42,9 +48,6 @@ public class  Request  implements Serializable {
     boolean success = false;
     public boolean isSuccess(){
         return success;
-    }
-    public String getAnswer(){
-        return answer;
     }
 
     public void setNosqlR(String str){
