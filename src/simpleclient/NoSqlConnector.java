@@ -13,6 +13,7 @@ import java.net.Socket;
 public class NoSqlConnector {
     Socket socket;
     Request response;
+    Request request;
     ObjectOutputStream oos;
     ObjectInputStream ois;
     int MAIN_PORT = 6661;
@@ -40,10 +41,11 @@ public class NoSqlConnector {
     }
     
     Request sendCommand(String command){
+        request = new Request(socket.getInetAddress().toString(),command);
         if(socket.isConnected()){
             try{
                 oos.flush();
-                oos.writeObject(response);
+                oos.writeObject(request);
                 oos.flush();
             } catch (IOException e) {
                 System.err.println(e);

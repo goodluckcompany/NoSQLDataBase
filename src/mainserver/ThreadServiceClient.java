@@ -28,12 +28,14 @@ public class ThreadServiceClient implements Runnable {
     @Override
     public void run() {
         try {
+            System.err.println("i'm here2");
             ois = new ObjectInputStream(socket.getInputStream());
             Request r;
 
             while (true) {
-                r = (Request) ois.readObject();
-
+                System.err.println("i'm here");
+                r = (Request)ois.readObject();
+                System.err.println(r);
                 String stringRequest = r.getNosqlR();
                 String[] stringListRequest = stringRequest.split(" ");
 

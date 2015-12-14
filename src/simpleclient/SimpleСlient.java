@@ -27,28 +27,44 @@ public class Simple—lient {
         command = "";
         conn = new NoSqlConnector("172.18.27.29");
         if(conn.establishConnection() == 0){
-            System.out.println("Input command:");
+            /*System.out.println("Input command:");
             try {
                 command = br.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            while(!command.equalsIgnoreCase("stop")) {
+            }*/
+
+            /*while(!command.equalsIgnoreCase("stop")) {
                 req = conn.sendCommand(command);
-                System.out.println(req);
+                System.out.println(req.toString());
                 System.out.println("Input command:");
                 try {
                     command = br.readLine();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
+
+            req = conn.sendCommand("create 1");
+            System.out.println(req.toString());
+            req = conn.sendCommand("add key car value blue 1");
+            System.out.println(req.toString());
+            req = conn.sendCommand("add key vehicle value red 1");
+            System.out.println(req.toString());
+            req = conn.sendCommand("download 1");
+            System.out.println(req);
+
             /*int key = 0;
             req = conn.sendCommand("create table_m");
             while (key < 500){
                 req = conn.sendCommand("add key item"+key+" value "+key+" table_m");
                 key++;
             }*/
+            try {
+                br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             conn.breakConnection();
         }
     }
