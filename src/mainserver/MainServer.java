@@ -17,6 +17,7 @@ public class MainServer {
 
     volatile LinkedList<Socket> listOfClient;/*Хранит список подключенных на данный момент клиентов,
     у которых обрабатывается запрос*/
+    int takenTable = 0;
 
     BufferedReader bufread = null;
     BufferedReader consoleInput = null;
@@ -29,6 +30,9 @@ public class MainServer {
     volatile int amountInaccessibleServer = 0;/*Считает количество недоступных серверов, если значение более 1, то
         возращяет False, в противном случает True*/
     Request r;
+
+    String currentLess;
+    String currentPreLess;
 
     AvailableTables availableTables;
 
@@ -179,4 +183,5 @@ public class MainServer {
             }
         }
     }
+
 }

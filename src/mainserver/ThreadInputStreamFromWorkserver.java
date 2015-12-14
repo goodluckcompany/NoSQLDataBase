@@ -59,14 +59,14 @@ public class ThreadInputStreamFromWorkserver implements Runnable {
 
                     oos.writeObject(req1);
                     oos.flush();
-                    
+
                 } catch (IOException e) {
                     System.err.println(tmpSocket + " has closed!");
-                    try {
-                        tmpSocket.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+                   // try {
+                   //     tmpSocket.close();
+                   // } catch (IOException e1) {
+                   //     e1.printStackTrace();
+                   // }
                 }
                 }
             }

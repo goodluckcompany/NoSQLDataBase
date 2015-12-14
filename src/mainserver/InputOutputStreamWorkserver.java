@@ -34,7 +34,7 @@ public class InputOutputStreamWorkserver {
     }
 
     public String getIpAdress() {
-        return ipAdress;
+        return ipAdress = ipAdress.replace("/","");
     }
 
     public Socket getSocket() {
