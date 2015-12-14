@@ -24,7 +24,7 @@ public class MainServer {
     int WORK_PORT = 6667;
     int CLIENT_PORT = 6661;
     int MAX_QUEUE = 100;
-    volatile int amountWorkserver = 1;/*Считает сколько всего рабочих серверов запущенно, если значение более 1, то возращает
+    volatile int amountWorkserver = 0;/*Считает сколько всего рабочих серверов запущенно, если значение более 1, то возращает
          true иначе возращает false.*/
     volatile int amountInaccessibleServer = 0;/*Считает количество недоступных серверов, если значение более 1, то
         возращяет False, в противном случает True*/

@@ -1,8 +1,10 @@
 package mainserver;
 
+import workserver.Item;
 import workserver.ResponseItem;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * Created by homie on 22.11.2015.
@@ -12,6 +14,16 @@ public class  Request  implements Serializable {
     String nosqlR;
     String answer;
     ResponseItem reqItems;
+    String nameTable = "";
+
+    public String getNameTable(){
+        return nameTable;
+    }
+
+    public void setNameTable(String _nameTable){
+        nameTable = _nameTable;
+    }
+
     public void setReqItems(ResponseItem items){
         reqItems = items;
     }
@@ -40,7 +52,15 @@ public class  Request  implements Serializable {
 
     @Override
     public String toString() {
-        return getTo() + " : " + getNosqlR();
+        String tmp ="";
+        //return getTo() + " : " + getNosqlR();
+        if(reqItems != null) {
+            Iterator<Item> itr = reqItems.ResponseItemList.iterator();
+            while (itr.hasNext()){
+                tmp += itr.next().toString() + "\n";
+            }
+        }
+        return getTo() + " : " + getNosqlR() + "\n" + tmp;
     }
 
     public String getTo() {

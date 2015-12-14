@@ -32,6 +32,7 @@ public class ThreadInputStreamFromWorkserver implements Runnable {
                 ms.amountInaccessibleServer++;
                 IOStreamWorkserver.status = 0;
                 System.err.println("Connection with " + IOStreamWorkserver.getSocket() + " is lost!");
+                e.printStackTrace();
                 try {
                     IOStreamWorkserver.socket.close();
                 } catch (IOException e1) {

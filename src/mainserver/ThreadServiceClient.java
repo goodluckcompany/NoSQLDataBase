@@ -36,6 +36,8 @@ public class ThreadServiceClient implements Runnable {
                 String stringRequest = r.getNosqlR();
                 String[] stringListRequest = stringRequest.split(" ");
 
+                r.setNameTable(stringListRequest[stringListRequest.length - 1]);
+
                 String ipAdressOfClient = socket.getInetAddress().toString();
                 ipAdressOfClient = ipAdressOfClient.replace("/", "");
 
@@ -43,20 +45,25 @@ public class ThreadServiceClient implements Runnable {
                     case "create": {
                         System.out.println(r.getNosqlR() + " -> create");
                         ms.availableTables.addTable(stringListRequest[1], "172.18.13.84", "172.18.27.29");
-                        //ms.availableTables.saveTable();
-                        ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
-                        ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                        ms.availableTables.saveTable();
+                        ms.getItemListOfWorkserver("172.18.13.84").oos.writeObject(r);
+                        ms.getItemListOfWorkserver("172.18.27.29").oos.writeObject(r);
                         break;
                     }
                     case "output":
                     case "download": {
                         System.out.println(r.getNosqlR() + " -> output or download");
+                        /*String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length - 1]);
+                        String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);*/
+
                         String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length - 1]);
                         String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
-                        if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
-                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
-                        } else if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                        if(!ipMainServer.equalsIgnoreCase("") && !ipReserveServer.equalsIgnoreCase("")){
+                            if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(r);
+                            } else if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(r);
+                            }
                         }
                         break;
                     }
@@ -64,11 +71,13 @@ public class ThreadServiceClient implements Runnable {
                         System.out.println(r.getNosqlR() + " -> add");
                         String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length - 1]);
                         String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
-                        if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
-                            ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
-                        }
-                        if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                            ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                        if(!ipMainServer.equalsIgnoreCase("") && !ipReserveServer.equalsIgnoreCase("")){
+                            if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(r);
+                            }
+                            if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(r);
+                            }
                         }
                         break;
                     }
@@ -77,11 +86,13 @@ public class ThreadServiceClient implements Runnable {
                         if (stringListRequest.length > 2) {
                             String ipMainServer = ms.availableTables.getMainServerIP(stringListRequest[stringListRequest.length - 1]);
                             String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
-                            if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
-                                ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
-                            }
-                            if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                                ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                            if(!ipMainServer.equalsIgnoreCase("") && !ipReserveServer.equalsIgnoreCase("")) {
+                                if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                    ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(r);
+                                }
+                                if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                    ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(r);
+                                }
                             }
                             break;
                         } else {
@@ -89,12 +100,13 @@ public class ThreadServiceClient implements Runnable {
                             String ipReserveServer = ms.availableTables.getReserveServerIP(stringListRequest[stringListRequest.length - 1]);
                             ms.availableTables.removeTable(stringListRequest[1]);
                             ms.availableTables.saveTable();
-
-                            if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
-                                ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
-                            }
-                            if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
-                                ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(new Request(ipAdressOfClient, r.getNosqlR()));
+                            if(!ipMainServer.equalsIgnoreCase("") && !ipReserveServer.equalsIgnoreCase("")) {
+                                if (ms.getItemListOfWorkserver(ipMainServer).getStatus() == ON) {
+                                    ms.getItemListOfWorkserver(ipMainServer).oos.writeObject(r);
+                                }
+                                if (ms.getItemListOfWorkserver(ipReserveServer).getStatus() == ON) {
+                                    ms.getItemListOfWorkserver(ipReserveServer).oos.writeObject(r);
+                                }
                             }
                         }
                         break;
@@ -102,7 +114,15 @@ public class ThreadServiceClient implements Runnable {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                ms.listOfClient.remove(socket);
+                socket.getInputStream().close();
+//                socket.getOutputStream().close();
+                socket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            //e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

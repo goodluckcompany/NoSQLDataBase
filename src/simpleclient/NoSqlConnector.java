@@ -43,7 +43,9 @@ public class NoSqlConnector {
         response = new Request(socket.getInetAddress().toString(),command);
         if(socket.isConnected()){
             try{
+                oos.flush();
                 oos.writeObject(response);
+                oos.flush();
             } catch (IOException e) {
                 System.err.println(e);
             }
