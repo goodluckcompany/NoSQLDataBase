@@ -4,6 +4,7 @@ import mainserver.Request;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -17,6 +18,7 @@ public class ThreadWs implements Runnable {
     public ObjectOutputStream oos;
 
     ThreadWs(Request r, ObjectOutputStream _oos,List<NoSqlDB> listDb, ResponseItem items){
+        ArrayList <String> list = new ArrayList<>();
         System.out.println("Зашел в конструктор потока");
         req = r;
         ipAdress = r.getTo();
@@ -24,7 +26,16 @@ public class ThreadWs implements Runnable {
         String nosqlR = req.getNosqlR();
         NoSqlParser nsp = new NoSqlParser();
         ResponseItem is;
+
+        ListOfTables lt = new ListOfTables();
+        list = lt.getTables();
+
+        for(String s: list){
+            listDb.add(new NoSqlDB(s));
+        }
+
         int numtable = tableNum(req.getNameTable(),listDb);
+
         if (numtable == -1){
             is = nsp.execute(nosqlR,listDb,items);
         }else {
