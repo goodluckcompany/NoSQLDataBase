@@ -35,16 +35,23 @@ public class ListOfTables {
     }
 
     public void listFilesForFolder(final File folder) {
-        for (final File fileEntry : folder.listFiles()) {
-            if ( !fileEntry.isDirectory()) {
-                String s = fileEntry.getName();
-                if(s.contains(".nosql")) {
-                    s = s.replace(".nosql","");
-                    size += fileEntry.length();
-                    tables.add(s);
-                }
+        try {
+            if(folder.listFiles() == null) return;
 
+            for (final File fileEntry : folder.listFiles()) {
+                if (!fileEntry.isDirectory()) {
+                    String s = fileEntry.getName();
+                    if (s.contains(".nosql")) {
+                        s = s.replace(".nosql", "");
+                        size += fileEntry.length();
+                        tables.add(s);
+                    }
+
+                }
             }
+        }catch (NullPointerException e)
+        {
+            System.out.println(e);
         }
     }
 
