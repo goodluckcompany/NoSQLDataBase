@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
+
 import mainserver.*;
 /**
  * Created by homie on 22.11.2015.
@@ -23,9 +25,26 @@ public class Workserver {
     int symbol;
     int PORT = 6667;
     int MAX_QUEUE = 100;
+    int numTable;
     public List <NoSqlDB> listDb = new LinkedList<>();
     public ResponseItem listR = new ResponseItem();
+
     Request r;
+
+    public int tableExist(String nametable){
+        int i = 0;
+        NoSqlDB ndb = null;
+        ListIterator<NoSqlDB> itr = listDb.listIterator();
+        while(itr.hasNext()){
+            ndb = itr.next();
+            if(ndb.getDbName().equals(nametable)){
+                numTable = i;
+                return i;
+            }
+
+        }
+        return -1;
+    }
 
     public static void main(String[] args){
         new Workserver();
@@ -81,8 +100,9 @@ public class Workserver {
             while (!socket.isClosed()){
                 try {
                     System.out.println("Создал поток");
-                    new ThreadWs((Request)ois.readObject(), oos,listDb,listR);
-                    // r = (Request)ois.readObject();
+                    r = (Request)ois.readObject();
+                    new ThreadWs(r, oos,listDb,listR);
+
 
 
                     System.out.println("Пошел дальше");
