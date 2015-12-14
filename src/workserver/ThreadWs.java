@@ -45,8 +45,6 @@ public class ThreadWs implements Runnable {
     public void run() {
         try {
             System.out.println("Вывел пришедший реквест");
-            System.out.println(req);
-            System.out.println(req.getReqItems().ResponseItemList.get(0).toString());
             oos.writeObject(req);
         } catch (IOException e) {
             e.printStackTrace();
