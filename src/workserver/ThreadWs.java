@@ -39,8 +39,12 @@ public class ThreadWs implements Runnable {
         if (numtable == -1){
             if (nosqlR.equals("size")) {
                 r.setSize(lt.getSize());
-            }else
-            is = nsp.execute(nosqlR,listDb,items);
+            }else {
+                is = nsp.execute(nosqlR, listDb, items);
+                if (is.equals(null)){
+                    r.setNosqlR(r.getNosqlR() + " FAILED");
+                }
+            }
         }else {
             if (nosqlR.equals("size")) {
                 r.setSize(lt.getSize());

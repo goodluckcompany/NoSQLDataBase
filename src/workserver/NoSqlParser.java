@@ -23,6 +23,7 @@ public class NoSqlParser
             nameTable = sb.nextToken();
             listDb.add(new NoSqlDB(nameTable));
             result = "success";
+            items.ResponseItemList.add(new Item("create","true"));
         }
         else {
             result = "error";
