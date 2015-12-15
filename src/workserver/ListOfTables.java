@@ -69,6 +69,8 @@ public class ListOfTables {
 
         ArrayList<String> tables = test.getTables();
 
+
+
         for(String s: tables){
             System.out.println(s);
         }
