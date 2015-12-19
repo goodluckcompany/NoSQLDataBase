@@ -17,23 +17,41 @@ import mainserver.*;
 
 public class Workserver {
 
+    /** Класс служит для создания рабочего сервера со свойствами: <br>
+     * {@link Workserver#socketToMain}, {@link Workserver#in}, {@link Workserver#sout},
+     * {@link Workserver#socket}, {@link Workserver#PORT}, {@link Workserver#MAX_QUEUE}, {@link Workserver#listDb},
+     * {@link Workserver#listR}, {@link Workserver#r}.
+     * @author Kurishev Oleg
+     */
 
+    /** Используется для создания сокета главного сервера*/
     ServerSocket socketToMain;
+    /** Используется для соединения с главным сервером*/
     Socket socket;
-    InputStream in;
+    /** Входной поток, для приема данных с главного сервера*/
+    InputStream sin;
+    /** Выходной поток, для отрпавки данных на главный сервер*/
     OutputStream sout;
-    int symbol;
+    /** Порт главного сервера*/
     int PORT = 6667;
+    /** Максимальное кол-во клиентов*/
     int MAX_QUEUE = 100;
-    int numTable;
+    /** Список хеш-таблиц */
     public List <NoSqlDB> listDb = new LinkedList<>();
-    public ResponseItem listR = new ResponseItem();
-
+    /** Список ответов гланому серверу */
+    public ResponseItem listR;
+    /** Сериализуемый класс для обмена информации между рабочим и главным сервером*/
     Request r;
 
     public static void main(String[] args){
         new Workserver();
     }
+
+    /** Создается новый объект {@link Workserver}, инициализируются параметры
+     * {@link Workserver#socketToMain}, {@link Workserver#socket},
+     * {@link Workserver#sin},  {@link Workserver#sout},{@link Workserver#listR}.
+     * @see ThreadWs
+     */
 
     Workserver(){
         try {
@@ -50,7 +68,7 @@ public class Workserver {
             System.out.println("SockeToMain.accept");
         }
 
-        InputStream sin = null;
+        sin = null;
         try {
             sin = socket.getInputStream();
         } catch (IOException e) {
@@ -80,7 +98,10 @@ public class Workserver {
             while (!socket.isClosed()){
                 try {
                     r = (Request)ois.readObject();
-                    new ThreadWs(r, oos,listDb,listR);
+                    listR = new ResponseItem();
+                    ThreadWs t = new ThreadWs(r, oos,listDb,listR);
+                    listR.ResponseItemList.clear();
+                    t = null;
                 } catch (IOException e) {
                     try {
                         socket.close();
