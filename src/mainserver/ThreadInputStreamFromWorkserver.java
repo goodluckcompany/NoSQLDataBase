@@ -1,21 +1,37 @@
 package mainserver;
 
-import workserver.ResponseItem;
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-/**
- * Created by homie on 26.11.2015.
+/** Класс создает поток, принимающий сообщения с рабочего сервера.<br>
+ * Поля класса: <br>
+ * {@link ThreadInputStreamFromWorkserver#thread},
+ * {@link ThreadInputStreamFromWorkserver#ms}
+ * {@link ThreadInputStreamFromWorkserver#IOStreamWorkserver},
+ * {@link ThreadInputStreamFromWorkserver#r},
+ * {@link ThreadInputStreamFromWorkserver#tmpSocket} <br>
+ *  Методы класса: <br>
+ * {@link ThreadInputStreamFromWorkserver#ThreadInputStreamFromWorkserver(MainServer, InputOutputStreamWorkserver)},
+ * {@link ThreadInputStreamFromWorkserver#run()} <br>
+ * @author Maslov Nikita
  */
 public class ThreadInputStreamFromWorkserver implements Runnable {
+    /** Поток, принимающий сообщения от рабочего сервера*/
     Thread thread;
+    /** Главный сервер*/
     MainServer ms;
+    /** Каналы связи с рабочим сервером*/
     InputOutputStreamWorkserver IOStreamWorkserver;
+    /** Передаваемый запрос*/
     Request r;
+    /** Сокет для передачи сообщений клиентам*/
     Socket tmpSocket;
 
+    /** Создается новый объект {@link ThreadInputStreamFromWorkserver}
+     * @param _ms главный сервер
+     * @param _IOStreamWorkserver каналы связи с рабочим сервером
+     */
     ThreadInputStreamFromWorkserver(MainServer _ms, InputOutputStreamWorkserver _IOStreamWorkserver){
         ms = _ms;
         IOStreamWorkserver = _IOStreamWorkserver;
@@ -23,6 +39,10 @@ public class ThreadInputStreamFromWorkserver implements Runnable {
         thread.start();
     }
 
+    /** Считывается сообщения от рабочего сервера и перенаправляется клиенту
+     * @see InputOutputStreamWorkserver
+     * @see MainServer
+     */
     @Override
     public void run() {
         while (true){
