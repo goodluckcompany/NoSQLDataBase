@@ -8,34 +8,70 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-/**
- * Created by homie on 22.11.2015.
+/** РљР»Р°СЃСЃ СЃР»СѓР¶РёС‚ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РіР»Р°РІРЅРѕРіРѕ СЃРµСЂРІРµСЂР° СЃРѕ СЃРІРѕР№СЃС‚РІР°РјРё: <br>
+ * {@link MainServer#listOfWorkserver}, {@link MainServer#itr}, {@link MainServer#listOfClient},
+ * {@link MainServer#takenTable}, {@link MainServer#bufread}, {@link MainServer#cString}, {@link MainServer#WORK_PORT},
+ * {@link MainServer#CLIENT_PORT}, {@link MainServer#MAX_QUEUE}, {@link MainServer#amountWorkserver},
+ * {@link MainServer#amountInaccessibleServer}, {@link MainServer#availableTables},
+ * {@link MainServer#tempSocket}, {@link MainServer#socketToClient} <br>
+ *  РњРµС‚РѕРґС‹ РєР»Р°СЃСЃР°: <br>
+ * {@link MainServer#MainServer()}, {@link MainServer#main(String[])}, {@link MainServer#getItemListOfClient(String)},
+ * {@link MainServer#initThreadISFromClient()},
+ * {@link MainServer#getItemListOfWorkserver(String)}, {@link MainServer#isItemListOfClient(String)},
+ * {@link MainServer#loadListWorkServers()},
+ * {@link MainServer#isItemListOfWorkserver(String)}, {@link MainServer#loadListWorkServers(String)},
+ * {@link MainServer#showListWorkServers()}, {@link MainServer#closeConnectionToListWorkserver()}
  */
+
 public class MainServer {
-    volatile ArrayList<InputOutputStreamWorkserver> listOfWorkserver;/*Переменная хранит список Рабочих серверов*/
+    /** РЎРІРѕР№СЃС‚РІРѕ - СЃРїРёСЃРѕРє Р Р°Р±РѕС‡РёС… СЃРµСЂРІРµСЂРѕРІ*/
+    volatile ArrayList<InputOutputStreamWorkserver> listOfWorkserver;
+
+    /** РЎРІРѕР№СЃС‚РІРѕ - РёС‚РµСЂР°С‚РѕСЂ РґР»СЏ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ СЃРїРёСЃРєР° InputOutputStreamWorkserver*/
     Iterator<InputOutputStreamWorkserver> itr;
 
-    volatile LinkedList<Socket> listOfClient;/*Хранит список подключенных на данный момент клиентов,
-    у которых обрабатывается запрос*/
+    /** РЎРІРѕР№СЃС‚РІРѕ - СЃРїРёСЃРѕРє РїРѕРґРєР»СЋС‡РµРЅРЅС‹С… РЅР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РєР»РёРµРЅС‚РѕРІ, Сѓ РєРѕС‚РѕСЂС‹С… РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ Р·Р°РїСЂРѕСЃ*/
+    volatile LinkedList<Socket> listOfClient;
+
+    /** РЎРІРѕР№СЃС‚РІРѕ - РїРѕСЂСЏРґРєРѕРІС‹Р№ РЅРѕРјРµСЂ С‚Р°Р±Р»РёС†С‹*/
     int takenTable = 0;
 
+    /** РЎРІРѕР№СЃС‚РІРѕ - СЂРµР·СѓР»СЊС‚Р°С‚ С‡С‚РµРЅРёСЏ СЃ РєРѕРЅСЃРѕР»Рё*/
     BufferedReader bufread = null;
-    BufferedReader consoleInput = null;
-    String cString = null;
-    int WORK_PORT = 6667;
-    int CLIENT_PORT = 6661;
-    int MAX_QUEUE = 100;
-    volatile int amountWorkserver = 0;/*Считает сколько всего рабочих серверов запущенно, если значение более 1, то возращает
-         true иначе возращает false.*/
-    volatile int amountInaccessibleServer = 0;/*Считает количество недоступных серверов, если значение более 1, то
-        возращяет False, в противном случает True*/
-    Request r;
 
+    /** РЎРІРѕР№СЃС‚РІРѕ - ip Р°РґСЂРµСЃ*/
+    String cString = null;
+
+    /** РЎРІРѕР№СЃС‚РІРѕ - РїРѕСЂС‚ СЂР°Р±РѕС‡РµРіРѕ СЃРµСЂРІРµСЂР°*/
+    int WORK_PORT = 6667;
+
+    /** РЎРІРѕР№СЃС‚РІРѕ - РїРѕСЂС‚ РєР»РёРµРЅС‚Р°*/
+    int CLIENT_PORT = 6661;
+
+    /** РЎРІРѕР№СЃС‚РІРѕ - РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РєР»РёРµРЅС‚РѕРІ*/
+    int MAX_QUEUE = 100;
+
+    /** РЎРІРѕР№СЃС‚РІРѕ - РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїСѓС‰РµРЅРЅС‹С… СЂР°Р±РѕС‡РёС… СЃРµСЂРІСЂРѕРІ*/
+    volatile int amountWorkserver = 0;
+
+    /** РЎРІРѕР№СЃС‚РІРѕ - РєРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРґРѕСЃС‚СѓРїРЅС‹С… СЃРµСЂРІРµСЂРѕРІ*/
+    volatile int amountInaccessibleServer = 0;
+
+    /** РЎРІРѕР№СЃС‚РІРѕ - СЃРїРёСЃРѕРє РґРѕСЃС‚СѓРїРЅС‹С… С‚Р°Р±Р»РёС†*/
     AvailableTables availableTables;
 
-    volatile Socket tempSocket;/*Хранит сокет только что подключившегося клиента, до передачи его в другой поток*/
-    ServerSocket socketToClient;/*Серверный сокет, который ожидает подключения новых клиентов*/
+    /** РЎРІРѕР№СЃС‚РІРѕ - СЃРѕРєРµС‚ С‚РѕР»СЊРєРѕ С‡С‚Рѕ РїРѕРґРєР»СЋС‡РёРІС€РµРіРѕСЃСЏ РєР»РёРµРЅС‚Р° РґРѕ РїРµСЂРµРґР°С‡Рё РµРіРѕ РІ РґСЂСѓРіРѕР№ РїРѕС‚РѕРє*/
+    volatile Socket tempSocket;
+    /** РЎРІРѕР№СЃС‚РІРѕ - СЃРµСЂРІРµСЂРЅС‹Р№ СЃРѕРєРµС‚, РєРѕС‚РѕСЂС‹Р№ РѕР¶РёРґР°РµС‚ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РЅРѕРІС‹С… РєР»РёРµРЅС‚РѕРІ*/
+    ServerSocket socketToClient;
 
+    /** РЎРѕР·РґР°РµС‚СЃСЏ РѕР±СЉРµРєС‚ {@link MainServer}, Р·Р°РіСЂСѓР¶Р°РµС‚СЃСЏ СЃРїРёСЃРѕРє СЂР°Р±РѕС‡РёС… СЃРµСЂРІСЂРѕРІ ({@link workserver.Workserver}).
+     *  Р•СЃР»Рё loadListWorkServers() РІРѕР·РІСЂР°С‰Р°РµС‚ false,
+     *  С‚Рѕ {@link MainServer} РїСЂРµРєСЂР°С‰Р°РµС‚ СЃРІРѕСЋ СЂР°Р±РѕС‚Сѓ, РёРЅР°С‡Рµ РІС‹РІРѕРґРёС‚СЃСЏ СЃРїРёСЃРѕРє
+     *  РїРѕРґРєР»СЋС‡РµРЅРЅС‹С… СЂР°Р±РѕС‡РёС… СЃРµСЂРІСЂРѕРІ.
+     *  РћР¶РёРґР°РµС‚СЃСЏ РїРѕРґРєР»СЋС‡РµРЅРёРµ РєР»РёРµРЅС‚РѕРІ.
+     * @see MainServer#MainServer()
+     */
     public static void main(String[] args) throws IOException {
         MainServer ms = new MainServer();
 
@@ -56,6 +92,11 @@ public class MainServer {
         }
     }
 
+    /** РЎРѕР·РґР°РµС‚СЃСЏ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ {@link MainServer}, РёРЅРёС†РёР°Р»РёР·РёСЂСѓСЋС‚СЃСЏ РїР°СЂР°РјРµС‚СЂС‹
+     * {@link MainServer#listOfWorkserver}, {@link MainServer#listOfClient},
+     * {@link MainServer#availableTables}, {@link MainServer#socketToClient}.
+     * @see AvailableTables
+     */
     public MainServer(){
         listOfWorkserver = new ArrayList<InputOutputStreamWorkserver>();
         listOfClient = new LinkedList<Socket>();
@@ -67,8 +108,13 @@ public class MainServer {
         availableTables = new AvailableTables();
     }
 
-    public boolean loadListWorkServers(String pathToListWorkserver){/*Устанавливает соединение с рабочими серверами из
-    файла*/
+    /** Р¤СѓРЅРєС†РёСЏ Р·Р°РіСЂСѓР¶Р°РµС‚ СЃРїРёСЃРѕРє СЂР°Р±РѕС‡РёС… СЃРµСЂРІРµСЂРѕРІ РёР· С„Р°Р№Р»Р°
+     * @param pathToListWorkserver РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ СЃРїРёСЃРєР° СЃРµСЂРІРµСЂРѕРІ
+     * @return true, РµСЃР»Рё РІСЃРµ СЃРµСЂРІРµСЂР° СЂР°Р±РѕС‚Р°СЋС‚,<br>
+     * false, РµСЃР»Рё Р±РѕР»РµРµ РѕРґРЅРѕРіРѕ СЃРµСЂРІРµСЂР° РЅРµ СЂР°Р±РѕС‚Р°РµС‚.
+     */
+    public boolean loadListWorkServers(String pathToListWorkserver){/*РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃРѕРµРґРёРЅРµРЅРёРµ СЃ СЂР°Р±РѕС‡РёРјРё СЃРµСЂРІРµСЂР°РјРё РёР·
+    С„Р°Р№Р»Р°*/
         try{
             bufread = new BufferedReader(new FileReader(pathToListWorkserver));
             while ((cString = bufread.readLine()) != null)
@@ -111,19 +157,29 @@ public class MainServer {
         }
     }
 
-    public boolean loadListWorkServers(){/*Перегруженная функция соединения с рабочими серверами*/
+    /** Р¤СѓРЅРєС†РёСЏ Р·Р°РіСЂСѓР¶Р°РµС‚ СЃРїРёСЃРѕРє СЂР°Р±РѕС‡РёС… СЃРµСЂРІРµСЂРѕРІ РёР· С„Р°Р№Р»Р° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ (listworkservers.lst)
+     * @return true, РµСЃР»Рё РІСЃРµ СЃРµСЂРІРµСЂР° СЂР°Р±РѕС‚Р°СЋС‚,<br>
+     * false, РµСЃР»Рё Р±РѕР»РµРµ РѕРґРЅРѕРіРѕ СЃРµСЂРІРµСЂР° РЅРµ СЂР°Р±РѕС‚Р°РµС‚.
+     */
+    public boolean loadListWorkServers(){
         return loadListWorkServers("listworkservers.lst");
     }
 
-    public void showListWorkServers(){/*Выводит список сокектов всех соединенных серверов*/
+    /** Р’С‹РІРѕРґРёС‚ РЅР° РєРѕРЅСЃРѕР»СЊ СЃРїРёСЃРѕРє СЃРѕРєРµРєС‚РѕРІ РІСЃРµС… СЃРѕРµРґРёРЅРµРЅРЅС‹С… СЃРµСЂРІРµСЂРѕРІ
+     */
+    public void showListWorkServers(){
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             System.out.println(itr.next().getSocket());
         }
     }
 
-    public InputOutputStreamWorkserver getItemListOfWorkserver(String _ipAdress){/*Возращает Рабочий сервер по
-    определенному IP адресу.*/
+    /** Р’РѕР·СЂР°С‰Р°РµС‚ СЂР°Р±РѕС‡РёР№ СЃРµСЂРІРµСЂ РїРѕ РѕРїСЂРµРґРµР»РµРЅРЅРѕРјСѓ IP Р°РґСЂРµСЃСѓ
+     * @param _ipAdress IP Р°РґСЂРµСЃ
+     * @return РѕР±СЉРµРєС‚ РєР»Р°СЃСЃР° {@link InputOutputStreamWorkserver}, РµСЃР»Рё СЃРµСЂРІРµСЂ СЃ С‚Р°РєРёРј Р°РґСЂРµСЃРѕРј РµСЃС‚СЊ,<br>
+     * null, РІ РґСЂСѓРіРѕРј СЃР»СѓС‡Р°Рµ.
+     */
+    public InputOutputStreamWorkserver getItemListOfWorkserver(String _ipAdress){
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             InputOutputStreamWorkserver tmp = itr.next();
@@ -132,8 +188,13 @@ public class MainServer {
         return null;
     }
 
-    public boolean isItemListOfWorkserver(String _ipAdress) { /*Определение наличия Рабочего сервера с определенным
-    IP адресом */
+    /** РћРїСЂРµРґРµР»РµРЅРёРµ РЅР°Р»РёС‡РёСЏ Р Р°Р±РѕС‡РµРіРѕ СЃРµСЂРІРµСЂР° СЃ РѕРїСЂРµРґРµР»РµРЅРЅС‹Рј IP Р°РґСЂРµСЃРѕРј
+     * @param _ipAdress IP Р°РґСЂРµСЃ
+     * @return true, РµСЃР»Рё С‚Р°РєРѕР№ СЃРµСЂРІРµСЂ РµСЃС‚СЊ,<br>
+     * false, РІ РґСЂСѓРіРѕРј СЃР»СѓС‡Р°Рµ
+     * @see workserver.Workserver
+     */
+    public boolean isItemListOfWorkserver(String _ipAdress) {
         itr = listOfWorkserver.iterator();
         while(itr.hasNext()) {
             InputOutputStreamWorkserver tmp = itr.next();
@@ -142,8 +203,12 @@ public class MainServer {
         return false;
     }
 
-    public boolean isItemListOfClient(String _ipAdress){/*Определяет наличие соединения с клиентом с определенным
-    IP адресом*/
+    /** РћРїСЂРµРґРµР»СЏРµС‚ РЅР°Р»РёС‡РёРµ СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ РєР»РёРµРЅС‚РѕРј СЃ РѕРїСЂРµРґРµР»РµРЅРЅС‹Рј IP Р°РґСЂРµСЃРѕРј
+     * @param _ipAdress IP Р°РґСЂРµСЃ
+     * @return true, РµСЃР»Рё СЃРѕРµРґРёРЅРµРЅРёРµ РµСЃС‚СЊ,<br>
+     * false, РІ РґСЂСѓРіРѕРј СЃР»СѓС‡Р°Рµ
+     */
+    public boolean isItemListOfClient(String _ipAdress){
         Iterator<Socket> iterator = listOfClient.iterator();
         while (iterator.hasNext()){
             Socket tmp = iterator.next();
@@ -152,7 +217,12 @@ public class MainServer {
         return false;
     }
 
-    public Socket getItemListOfClient(String _ipAdress){/*Возращает сокет клиента с определенным IP адресом*/
+    /** Р’РѕР·СЂР°С‰Р°РµС‚ СЃРѕРєРµС‚ РєР»РёРµРЅС‚Р° СЃ РѕРїСЂРµРґРµР»РµРЅРЅС‹Рј IP Р°РґСЂРµСЃРѕРј
+     * @param _ipAdress IP Р°РґСЂРµСЃ
+     * @return РѕР±СЉРµРєС‚ РєР»Р°СЃСЃР° {@link Socket}, РµСЃР»Рё СЃРѕРєРµС‚ СЃ С‚Р°РєРёРј Р°РґСЂРµСЃРѕРј РµСЃС‚СЊ,<br>
+     * false, РІ РґСЂСѓРіРѕРј СЃР»СѓС‡Р°Рµ
+     */
+    public Socket getItemListOfClient(String _ipAdress){
         Iterator<Socket> iterator = listOfClient.iterator();
         while (iterator.hasNext()){
             Socket tmp = iterator.next();
@@ -161,14 +231,19 @@ public class MainServer {
         return null;
     }
 
-    public void initThreadISFromClient(){/*Инициализирует потоки принимающие сообщения с Workserver*/
+    /** РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РїРѕС‚РѕРєРё, РїСЂРёРЅРёРјР°СЋС‰РёРµ СЃРѕРѕР±С‰РµРЅРёСЏ СЃ Workserver
+     * @see workserver.Workserver
+     */
+    public void initThreadISFromClient(){
         itr = listOfWorkserver.iterator();
         while (itr.hasNext()){
             new ThreadInputStreamFromWorkserver(this,itr.next());
         }
     }
 
-    public void closeConnectionToListWorkserver(){/*Закрывает все соединения с рабоими серверами*/
+    /** Р—Р°РєСЂС‹РІР°РµС‚ РІСЃРµ СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ СЂР°Р±РѕС‡РёРјРё СЃРµСЂРІРµСЂР°РјРё
+     */
+    public void closeConnectionToListWorkserver(){
         itr = listOfWorkserver.iterator();
         Socket tmpSck;
         while(itr.hasNext()) {
