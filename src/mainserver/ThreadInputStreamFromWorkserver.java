@@ -54,8 +54,8 @@ public class ThreadInputStreamFromWorkserver implements Runnable {
 
                     Request req1 = new Request(r.getTo(),r.getNosqlR());
                     req1.setReqItems(r.getReqItems());
-                    System.out.println(tmpSocket);
-                    System.out.println(r);
+                    //System.out.println(tmpSocket);
+                    //System.out.println(r);
 
                     oos.writeObject(req1);
                     oos.flush();

@@ -73,7 +73,7 @@ public class  Request  implements Serializable {
         if(reqItems != null) {
             Iterator<Item> itr = reqItems.ResponseItemList.iterator();
             while (itr.hasNext()){
-                tmp += itr.next().toString() + "\n";
+                tmp += itr.next().toString();
             }
         }
         return getTo() + " : " + getNosqlR() + "\n" + tmp;

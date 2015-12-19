@@ -59,11 +59,9 @@ public class NoSqlConnector {
             try{
                 response = (Request)ois.readObject();
             } catch (ClassNotFoundException e) {
-               // System.err.println(e);
-                System.err.println("I was here 0");
+                System.err.println(e);
             } catch (IOException e) {
-              //  System.err.println(e);
-                System.err.println("I was here 1");
+                System.err.println(e);
             }
         }
         return response;
