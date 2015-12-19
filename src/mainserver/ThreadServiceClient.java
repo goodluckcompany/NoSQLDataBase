@@ -1,23 +1,38 @@
 package mainserver;
 
-import com.sun.org.apache.xerces.internal.xs.StringList;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-/**
- * Created by homie on 24.11.2015.
+/** Класс создает поток, принимающий сообщения клиента<br>
+ * Поля класса: <br>
+ * {@link ThreadServiceClient#socket},
+ * {@link ThreadServiceClient#ms}
+ * {@link ThreadServiceClient#t},
+ * {@link ThreadServiceClient#ois},
+ * {@link ThreadServiceClient#ON}<br>
+ *  Методы класса: <br>
+ * {@link ThreadServiceClient#ThreadServiceClient(Socket, MainServer)},
+ * {@link ThreadServiceClient#run()} <br>
+ * @author Maslov Nikita
  */
 public class ThreadServiceClient implements Runnable {
+    /** Сокет соединения с клиентом*/
     Socket socket;
+    /** Главный сервер*/
     MainServer ms;
+    /** Поток, принимающий сообщения от клиента*/
     Thread t;
+    /** Создание потока приема информации*/
     ObjectInputStream ois;
+    /** Состояние сервера*/
     int ON = 1;
-    int OFF = 0;
 
+    /** Создается новый объект {@link ThreadServiceClient}
+     * @param _socket сокет соединения с клиентом
+     * @param _ms главный сервер
+     */
     ThreadServiceClient(Socket _socket, MainServer _ms){
         ms = _ms;
         socket = _socket;
@@ -25,6 +40,11 @@ public class ThreadServiceClient implements Runnable {
         t.start();
     }
 
+    /** Принимается запрос клиента, обрабатывается и отправляется на рабочий сервер
+     * @see workserver.Workserver
+     * @see MainServer
+     * @see Request
+     */
     @Override
     public void run() {
         try {

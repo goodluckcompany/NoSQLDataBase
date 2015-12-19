@@ -3,20 +3,33 @@ package mainserver;
 import java.io.*;
 import java.util.Vector;
 
-/**
- * Created by Anna on 24.11.2015.
+/** Класс служит для создания списка доступных таблиц со свойствами: <br>
+ * {@link AvailableTables#fileName}, {@link AvailableTables#table},
+ * {@link AvailableTables#row} <br>
+ *  Методы класса: <br>
+ * {@link AvailableTables#AvailableTables()}, {@link AvailableTables#addTable(String, String, String)},
+ * {@link AvailableTables#saveTable()},
+ * {@link AvailableTables#removeTable(String)},
+ * {@link AvailableTables#getMainServerIP(String)}, {@link AvailableTables#getReserveServerIP(String)}<br>
+ * @author Vladimirova Anna
  */
-public class AvailableTables {
 
+public class AvailableTables {
+    /** Свойство - путь к файлу списка таблиц*/
     String fileName = "src\\mainserver\\AvailableTables";
+
+    /** Свойство - список таблиц*/
     Vector<Vector<String>> table;
+
+    /** Свойство - строка списка таблиц*/
     Vector<String> row;
 
-    AvailableTables(){//инициализация списка таблиц, считываем из файла
+    /** Создается новый объект {@link AvailableTables} <br>
+     * Таблица считывается из файла и помещается в поле {@link AvailableTables#table}
+     */
+    AvailableTables(){
         table = new Vector<Vector<String>>();
-        Vector<String> vs;
         String line;
-
         try {//пытаемся открыть файл для чтения
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
             StringBuilder sb = null;
@@ -47,7 +60,14 @@ public class AvailableTables {
         }
     }
 
-    public int addTable(String tableName, String mainServerIP, String reserveServerIP){//добавить таблицу в список таблиц
+    /** Добавление таблицы в список таблиц
+     * @param tableName имя таблицы
+     * @param mainServerIP IP адрес основного сервера
+     * @param reserveServerIP IP адрес резервного сервера
+     * @return -1, если такая таблица уже есть в списке,<br>
+     * 0, в случае успешного добавления.
+     */
+    public int addTable(String tableName, String mainServerIP, String reserveServerIP){
         for(int i = 0; i < table.size(); i++){
             if(table.get(i).get(0).equals(tableName))
                 return -1; //возвращает -1, если такая таблица уже есть в списке
@@ -62,18 +82,28 @@ public class AvailableTables {
         return 0;
     }
 
-    public int removeTable(String tableName){//удалить таблицу из списка таблиц
+    /** Удаление таблицы из списка таблиц
+     * @param tableName имя таблицы
+     * @return 1, в случае неудачи,<br>
+     * 0, в случае успешного удаления.
+     */
+    public int removeTable(String tableName){
         for(int i = 0; i < table.size(); i++){
             if (table.get(i).get(0).equals(tableName)) {
                 table.remove(i);
                 return 0;
             }
         }
-        return 1; //таблица не была удалена
+        return 1;
     }
 
-
-    public int saveTable(){//запись в файл таблицы
+    /** Запись таблица в файл
+     * @return -1, если такая таблица уже есть в списке,<br>
+     * 0, в случае успешной записи <br>
+     * 1, в случае ошибки при открытии файла <br>
+     * 2, в случае ошибки при записи в файл
+     */
+    public int saveTable(){
         FileWriter fw;
         try { //Пытаемся открыть файл на запись
             fw = new FileWriter(new File(fileName));
@@ -98,7 +128,11 @@ public class AvailableTables {
         return 0;
     }
 
-    public String getMainServerIP(String tableName){//возвращает IP главного сервера для таблицы
+    /** Возвращает IP главного сервера для таблицы
+     * @param tableName имя таблицы
+     * @return mainServerIP
+     */
+    public String getMainServerIP(String tableName){
         String mainServerIP = "";
         for(int i = 0; i < table.size(); i++){
             if (table.get(i).get(0).equals(tableName))
@@ -107,7 +141,11 @@ public class AvailableTables {
         return mainServerIP;
     }
 
-    public String getReserveServerIP(String tableName){ //возвращает IP резервного сервера для таблицы
+    /** Возвращает IP резервного сервера для таблицы
+     * @param tableName имя таблицы
+     * @return reserveServerIP
+     */
+    public String getReserveServerIP(String tableName){
         String reserveServerIP = "";
         for(int i = 0; i < table.size(); i++){
             if (table.get(i).get(0).equals(tableName))

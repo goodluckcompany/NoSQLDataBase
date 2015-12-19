@@ -1,28 +1,41 @@
 package simpleclient;
 
-import java.io.*;
-import java.net.Socket;
-import java.util.Iterator;
-
 import mainserver.Request;
-import workserver.Item;
-import workserver.ResponseItem;
 
-/**
- * Created by homie on 22.11.2015.
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/** Класс служит для создания клиента
+ *  Поля класса: <br>
+ * {@link SimpleClient#req}, {@link SimpleClient#br},{@link SimpleClient#command},
+ * {@link SimpleClient#conn} <br>
+ *  Методы класса: <br>
+ * {@link SimpleClient#main(String[])}, {@link SimpleClient#SimpleClient()}<br>
+ * @author Maslov Nikita
  */
-public class SimpleСlient {
+public class SimpleClient {
+    /** Результат запроса к БД*/
     Request req;
-    ResponseItem respItem;
+    /** Чтение с консоли*/
     BufferedReader br;
+    /** Команда, вводимая клиентом*/
     String command;
+    /** Соединение с сервером*/
     NoSqlConnector conn;
 
+    /** Создается новый объект {@link SimpleClient}*/
     public static void main(String[] args){
-        new SimpleСlient();
+        new SimpleClient();
     }
 
-    SimpleСlient(){
+    /** Создается новый объект {@link SimpleClient} <br>
+     * Устанавливается соединение, считывается команда с консоли,
+     * отправляется на сервер и принимается ответ
+     * @see NoSqlConnector
+     * @see Request
+     */
+    SimpleClient(){
         br = new BufferedReader(new InputStreamReader(System.in));
         command = "";
         conn = new NoSqlConnector("172.18.27.29");
