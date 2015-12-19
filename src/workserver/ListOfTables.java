@@ -8,11 +8,21 @@ import java.util.ArrayList;
  * Created by алексей on 14.12.2015.
  */
 public class ListOfTables {
+    /** Класс служит для хранения имён таблиц, который получается из заданной директории: <br>
+     * {@link ListOfTables#tables}, {@link ListOfTables#size}, {@link ListOfTables#dir} .
+     * @author Ivanov Aleksey
+     */
+
+    /** Используется для хранения имён таблиц из директории {@link ListOfTables#dir}    */
     private ArrayList<String> tables;
+    /** Размер файлов в директории {@link ListOfTables#dir}    */
     private long size;
+    /** Директория из которой загружать имена файлов  */
     private  static String dir;
 
-
+    /**
+     * Конструктор, задает директорию и вызывает функцию {@link ListOfTables#update()} для получения имён файлов
+     */
     ListOfTables() {
         dir = "";
         try {
@@ -27,6 +37,10 @@ public class ListOfTables {
 
     }
 
+    /**
+     * Очищает {@link ListOfTables#tables} и вызывает функцию {@link ListOfTables#listFilesForFolder(File)}
+     * для получения списка файлов из директории {@link ListOfTables#dir}
+     */
     public void update(){
         tables.clear();
         final File folder = new File(dir);
@@ -34,8 +48,14 @@ public class ListOfTables {
 
     }
 
-    public void listFilesForFolder(final File folder) {
+    /**
+     * Производит поиск файлов в директории {@link ListOfTables#dir} и добавляет их в список если их расширение
+     * .nosql
+     * @param folder директория из которой получать список имён
+     */
+    private void listFilesForFolder(final File folder) {
         try {
+            size = 0;
             if(folder.listFiles() == null) return;
 
             for (final File fileEntry : folder.listFiles()) {
@@ -55,9 +75,16 @@ public class ListOfTables {
         }
     }
 
-
+    /**
+     * Возвращает размер файлов директории {@link ListOfTables#dir}
+     * @return возвращает {@link ListOfTables#size}
+     */
     public long getSize(){ return size;}
 
+    /**
+     * Возвращает список имён файлов в {@link ListOfTables#dir}
+     * @return возвращает {@link ListOfTables#tables}
+     */
     public ArrayList<String> getTables() {
         return tables;
     }

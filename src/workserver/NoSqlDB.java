@@ -12,14 +12,30 @@ import java.io.*;
 
 public class NoSqlDB {
 
+    /** Класс служит для создания таблицы и работой с ней: <br>
+     * {@link NoSqlDB#dbName}, {@link NoSqlDB#table}, {@link NoSqlDB#fileSize}, {@link NoSqlDB#dir}.
+     * @author Ivanov Aleksey
+     */
+
+    /** Имя таблицы, используется для создания файла*/
     private String dbName;
+    /** Таблица с полями ключ, значение. Используется для хранения таблицы */
     private Hashtable<String, String> table;
+    /** Размер файла, хранит размер файла, который находится в директории {@link NoSqlDB#dir}.   */
     private long fileSize;
+    /**Путь до файла, используется для доступа к файлу */
     private String dir;
 
     //Конструктор
+
+    /**
+     * Конструктор класса {@link NoSqlDB}
+     * @param dbName имя таблицы для создания
+     */
     public NoSqlDB(String dbName){
+        if(dbName.equals("")) throw new NullPointerException("Error: Null name");
         this.dbName = dbName;
+
         dir = "";
         try {
             dir = new File(".").getCanonicalPath();
@@ -59,6 +75,10 @@ public class NoSqlDB {
 
 
     //читает из файла с именем dbName базу данных из директории dir
+
+    /**
+     * Производит чтение из файла по пути {@link NoSqlDB#dir} в {@link NoSqlDB#table}.
+     */
     private void readDB(){
         String jsonDB = "";
         try(FileReader reader = new FileReader(dir))
@@ -92,6 +112,10 @@ public class NoSqlDB {
     }
 
     //изменяет информацию о размере файла
+
+    /**
+     * Изменяет значение {@link NoSqlDB#fileSize} в зависимости от размера файла по пути {@link NoSqlDB#dir}
+     */
     private void changeFileSize(){
 
         String baseDir = "";
@@ -107,17 +131,25 @@ public class NoSqlDB {
     }
 
 
+    /**
+     *
+     * @return возвращает размер файла по пути {@link NoSqlDB#dir}
+     */
     public long getFileSize(){
        return fileSize;
    }
 
     //запись таблицы в файл
+
+    /**
+     * Записывает таблицу {@link NoSqlDB#table} в файл {@link NoSqlDB#dir}.
+     */
     private void writeTableToFile(){
         FileWriter writeFile = null;
         try {
+            String jsonDB = new Gson().toJson(table);
             File tableFile = new File(dir);
             writeFile = new FileWriter(tableFile);
-            String jsonDB = new Gson().toJson(table);
             writeFile.write(jsonDB);
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,20 +164,38 @@ public class NoSqlDB {
         }
     }
 
+    /**
+     *
+     * @return возвращает имя таблицы
+     */
     public String getDbName(){
         return dbName;
     }
 
     //Добавляет пару ключ, значение
+
+    /**
+     * Функция добавления в таблицу новой пары - ключ, значение. Так же записывает таблицу в файл и меняет его размер
+     * для класса.
+     * @param key ключ
+     * @param value значение
+     */
     public void append(String key, String value){
 
         //изменяем таблицу
         table.put(key, value);
         //запись в файл
         writeTableToFile();
+        changeFileSize();
     }
 
     //Возвращает значение по ключу
+
+    /**
+     * Возвращает по ключу {@link ResponseItem} в который записывается пара значение и ключ
+     * @param key ключ по которому искать значение
+     * @return Возвращает экземпляр класса {@link ResponseItem}.
+     */
     public ResponseItem getValue(String key){
         ResponseItem item = new ResponseItem();
         if(table.get(key) != null) {
@@ -155,14 +205,25 @@ public class NoSqlDB {
     }
 
     //удаляет запись с заданным ключом
+
+    /**
+     * Удаляет запись с заданным ключом, так же перезаписывает файл и меняет размер
+     * @param key ключ, который следует удалить
+     */
     public void delKey(String key){
         table.remove(key);
         //изменение файла
         writeTableToFile();
+        changeFileSize();
     }
 
 
     //удаляет все записи с заданным значением
+
+    /**
+     * Удаляет все записи с заданным значением, так же перезаписывает файл и меняет размер
+     * @param value значение для удаления
+     */
     public void delValue(String value){
         Enumeration<String> keys = table.keys();
         while(keys.hasMoreElements()) {
@@ -173,11 +234,16 @@ public class NoSqlDB {
         }
 
         writeTableToFile();
-
+        changeFileSize();
 
     }
 
     //Возвращает все пары ключ значение в классе ResponseItem
+
+    /**
+     * Возвращает все пары ключ - значение в классе {@link ResponseItem}
+     * @return экземпляр класса {@link ResponseItem}
+     */
     public ResponseItem getAll(){
         ResponseItem items = new ResponseItem();
         for (Map.Entry<String, String> entry : table.entrySet()) {
@@ -187,12 +253,22 @@ public class NoSqlDB {
     }
 
     //возможно тоже не понадобится
+
+    /** @deprecated Возвращение строкового значения таблицы
+    * @return Возвращает строкое значение таблицы {@link NoSqlDB#table}
+     */
     public String toString(){
         if(table == null) return "";
         else return table.toString();
     }
 
     //Возвращает ResponseItem, содержащий все ключи у которых заданное значение
+
+    /**
+     * Возвращает {@link ResponseItem}, содержащий все ключи у которых заданное значение
+     * @param value значение ключи которого требуется вернуть
+     * @return экземпляр класса {@link ResponseItem}
+     */
     public ResponseItem getKeys(String value){
         ResponseItem items = new ResponseItem();
         Enumeration<String> keys = table.keys();
@@ -207,6 +283,10 @@ public class NoSqlDB {
     }
 
     //Удаляет файл базы данных
+
+    /**
+     * Удаляет файл {@link NoSqlDB#dir}
+     */
     public void deleteFile(){
         File tableFile = new File(dir);
         tableFile.delete();
@@ -219,9 +299,9 @@ public class NoSqlDB {
     public static void main(String[] args) {
         NoSqlDB db = new NoSqlDB("test");
 
-  //      db.append("test","oleg");
-  //      db.append("test1","oleg");
-  //      db.append("test3","alesha");
+        db.append("test","oleg");
+        db.append("test1","oleg");
+        db.append("test3","alesha");
 
   //      db.delValue("oleg");
   //      db.delKey("test3");
