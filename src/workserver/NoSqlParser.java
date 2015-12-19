@@ -1,11 +1,18 @@
 package workserver;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-/**
- * Created by Anderson on 25.11.2015.
+/** Класс служит для обработки nosql запроса :
+ * <br>
+ * В зависимости от запроса и ключевых слов в нём вызывается соответствующие функции
+ * <br>
+ * класса NoSqlDb, котороый описывает класс хеш-таблиц
+ * <br>
+ * Парсер вызывает соответствующую функцию измения,создания таблицы и возвращает ответ
+ * <br>
+ * {@link NoSqlParser#nameTable}, {@link NoSqlParser#key}, {@link NoSqlParser#value}.
+ * @author Kurishev Oleg
  */
 public class NoSqlParser
 {
@@ -13,9 +20,19 @@ public class NoSqlParser
     StringTokenizer sb;
     String result;
     String start = "";
+    /** Используется для заполнения поля ключа, которое используется в разборе запросов*/
     String key = "";
+    /** Используется для заполнения поля значения, которое используется в разборе запросов*/
     String value = "";
+    /** Хранит имя таблицы в которой происходят изменения*/
     String nameTable = "";
+
+    /** Возращает ResponseItem items - список items, структура для передачи ответов
+     * @param sql  nosql запрос
+     * @param listDb список таблиц на сервере
+     * @param items ответ для requset
+     * @return объект класса {@link ResponseItem}
+     */
     public ResponseItem execute (String sql,List<NoSqlDB> listDb, ResponseItem items){
         sb = new StringTokenizer(sql);
         start = sb.nextToken();
@@ -45,8 +62,9 @@ public class NoSqlParser
                         key = sb.nextToken();
                     nameTable = sb.nextToken();
                     items = db.getValue(key);
+                    return items;
                     // вывоз соответствующей функции вывода значения ключа в таблице db
-                    break;
+
                 }
                 if (start.equals("all")){
                     if (sb.nextToken().equals("key") && sb.nextToken().equals("value"))
