@@ -8,25 +8,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-/**
- * Created by Anderson on 26.11.2015.
+/**  ласс служит дл€ создани€ патока рабочего сервера, который обрабатывает запрос с мейна, возвраща€ ответ в виде Request:
+ * <br>
+ * ¬ списке таблиц происходит поиск таблицы указанной в поле nameTable, класса Request
+ * <br>
+ * «атем вызвываетс€ парсер которому передаетс€ nosql запрос, который хранитс€ в Request
+ * <br>
+ * ѕарсер вызывает соответствующую функцию измени€,создани€ таблицы и возвращает ответ
+ * <br>
+ * «атем этот ответ(Request) передаетс€ в выходной поток, который считывает главный сервер
+ * <br>
+ * {@link ThreadWs#ipAdress}, {@link ThreadWs#req}, {@link ThreadWs#t},
+ * {@link ThreadWs#oos}.
+ * @author Kurishev Oleg
  */
 public class ThreadWs implements Runnable {
 
-    /**  ласс служит дл€ создани€ патока рабочего сервера, который обрабатывает запрос с мейна, возвраща€ ответ в виде Request:
-     * <br>
-     * ¬ списке таблиц происходит поиск таблицы указанной в поле nameTable, класса Request
-     * <br>
-     * «атем вызвываетс€ парсер которому передаетс€ nosql запрос, который хранитс€ в Request
-     * <br>
-     * ѕарсер вызывает соответствующую функцию измени€,создани€ таблицы и возвращает ответ
-     * <br>
-     * «атем этот ответ(Request) передаетс€ в выходной поток, который считывает главный сервер
-     * <br>
-     * {@link ThreadWs#ipAdress}, {@link ThreadWs#req}, {@link ThreadWs#t},
-     * {@link ThreadWs#oos}.
-     * @author Kurishev Oleg
-     */
+
 
     /** »спользуетс€ дл€ указани€ адресса клиента от которого пришел запрос*/
     String ipAdress;
@@ -34,6 +32,7 @@ public class ThreadWs implements Runnable {
     Request req;
     /** »спользуетс€ дл€ создани€ потока*/
     Thread t;
+    /** ¬ыходной поток*/
     public ObjectOutputStream oos;
     ThreadWs(Request r, ObjectOutputStream _oos,List<NoSqlDB> listDb, ResponseItem items){
         ArrayList <String> list = new ArrayList<>();
@@ -88,6 +87,11 @@ public class ThreadWs implements Runnable {
         }
 
     }
+    /** ¬озращает число int - номер таблицы в списке с названием nameTable
+     * @param nametable им€ таблицы
+     * @param listDb список таблиц на сервере
+     * @return номер таблицы в списке
+     */
     static public int tableNum(String nametable,List<NoSqlDB> listDb){
         int i = 0;
         NoSqlDB ndb = null;
