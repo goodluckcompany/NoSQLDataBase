@@ -72,7 +72,7 @@ public class ThreadWs implements Runnable {
 
     }
 
-    public int tableNum(String nametable,List<NoSqlDB> listDb){
+    static public int tableNum(String nametable,List<NoSqlDB> listDb){
         int i = 0;
         NoSqlDB ndb = null;
         ListIterator<NoSqlDB> itr = listDb.listIterator();
