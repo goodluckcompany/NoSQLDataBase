@@ -70,27 +70,17 @@ public class Workserver {
             e.printStackTrace();
         }
 
-        // in = socket.getInputStream();
-           // out = socket.getOutputStream();
-
         ObjectInputStream ois = null;
         try {
             ois = new ObjectInputStream(sin);
         } catch (IOException e) {
             System.out.println("ois");
         }
-
             System.out.println("Connect to be!");
-
             while (!socket.isClosed()){
                 try {
-                    System.out.println("Создал поток");
                     r = (Request)ois.readObject();
                     new ThreadWs(r, oos,listDb,listR);
-
-
-
-                    System.out.println("Пошел дальше");
                 } catch (IOException e) {
                     try {
                         socket.close();

@@ -19,7 +19,6 @@ public class ThreadWs implements Runnable {
 
     ThreadWs(Request r, ObjectOutputStream _oos,List<NoSqlDB> listDb, ResponseItem items){
         ArrayList <String> list = new ArrayList<>();
-        System.out.println("Зашел в конструктор потока");
         req = r;
         ipAdress = r.getTo();
         oos = _oos;
@@ -61,7 +60,6 @@ public class ThreadWs implements Runnable {
     public void run() {
         try {
             if ( req.getIsOriginal()){
-                System.out.println("Вывел пришедший реквест");
                 oos.flush();
                 oos.writeObject(req);
                 oos.flush();
@@ -79,8 +77,6 @@ public class ThreadWs implements Runnable {
         while(itr.hasNext()){
             ndb = itr.next();
             if(ndb.getDbName().equals(nametable)){
-                System.out.println(nametable);
-                System.out.println(i);
                 return i;
             }
             i++;
