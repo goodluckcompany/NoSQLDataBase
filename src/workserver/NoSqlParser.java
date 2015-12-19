@@ -23,10 +23,11 @@ public class NoSqlParser
             nameTable = sb.nextToken();
             listDb.add(new NoSqlDB(nameTable));
             result = "success";
-            items.ResponseItemList.add(new Item("create","true"));
+            items.ResponseItemList.add(new Item("create",result));
         }
         else {
             result = "error";
+            items.ResponseItemList.add(new Item("create",result));
         }
         return items;
     }
@@ -35,12 +36,9 @@ public class NoSqlParser
         start = sb.nextToken();
         switch (start){
             case "size" : start = "size";
-
-               //items.ResponseItemList.add(new Item("size",Long.toString(db.getFileSize())));
-                System.out.println(db.getDbName());
+               items.ResponseItemList.add(new Item("size", Long.toString(db.getFileSize())));
                 break;
             case "output" : start = "output";
-                System.out.println(start);
                 start = sb.nextToken();
                 if (start.equals("value")){
                     if (sb.nextToken().equals("key"))
@@ -61,7 +59,6 @@ public class NoSqlParser
                 System.out.println("ERRORout");
                 break;
             case "add": start = "add";
-                System.out.println(start);
                 start = sb.nextToken();
                 if (start.equals("key")) {
                     key = sb.nextToken();
@@ -70,18 +67,19 @@ public class NoSqlParser
                     nameTable = sb.nextToken();
                     // пусть возвращает 1 в случае успеха, 0 в случае провала
                     db.append(key, value);
+                    items.ResponseItemList.add(new Item("added", "true"));
                     // вывоз соответствующей функции добавления ключа со значением в таблицу db
                     break;
                 }
                 System.out.println("ERRORadd");
                 break;
             case "delete": start = "delete";
-                System.out.println(start);
                 start = sb.nextToken();
                 if (start.equals("key")){
                     key = sb.nextToken();
                     nameTable = sb.nextToken();
                     db.delKey(key);
+                    items.ResponseItemList.add(new Item(key,"not found"));
                     // вывоз соответствующей функции удаления ключа в таблице db
                     break;
                 }
@@ -92,6 +90,7 @@ public class NoSqlParser
                             nameTable = sb.nextToken();
                             db.delValue(value);
                             // вывоз соответствующей функции удаления всех ключей с заданным значением в таблице db
+                            items.ResponseItemList.add(new Item("delete all key","success"));
                             break;
                         }
                     System.out.println("ERRORdelAll");
@@ -99,21 +98,20 @@ public class NoSqlParser
                 nameTable = start;
                 db.deleteFile();
                 db = null; // может придется добавить код в ворк сервер
+                items.ResponseItemList.add(new Item(nameTable,"has been deleted"));
                 // вывоз соответствующей функции удаления таблицы db
                 System.out.println("ERRORdel");
                 break;
             case "download": start = "download";
-                System.out.println(start);
-                System.out.println("LOL777");
                 nameTable = sb.nextToken();
                 ResponseItem its = db.getAll();
                 // вывоз соответствующей функции возвращения таблицы db
                 return its;
             case "create": start = "create";
-                System.out.println(start);
                 nameTable = sb.nextToken();
                 db = new NoSqlDB(nameTable);
                 // вывоз соответствующей функции создания таблицы db
+                items.ResponseItemList.add(new Item("create","true"));
                 break;
             default:
                 System.out.println("DEF ERROR");
