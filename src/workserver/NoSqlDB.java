@@ -63,12 +63,22 @@ public class NoSqlDB {
         String jsonDB = "";
         try(FileReader reader = new FileReader(dir))
         {
-            // читаем посимвольно
+            /*
             int c;
             while((c=reader.read())!=-1){
 
                 jsonDB = jsonDB + (char) c;
+
+            } */
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            StringBuffer stringBuffer = new StringBuffer();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+                stringBuffer.append("\n");
             }
+            jsonDB = stringBuffer.toString();
+            reader.close();
         }
         catch(IOException ex){
 
@@ -171,7 +181,6 @@ public class NoSqlDB {
     public ResponseItem getAll(){
         ResponseItem items = new ResponseItem();
         for (Map.Entry<String, String> entry : table.entrySet()) {
- //           s += entry.getKey() + ":" + entry.getValue() + " ";
             items.ResponseItemList.add(new Item(entry.getKey(),entry.getValue()));
         }
         return items;

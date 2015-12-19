@@ -27,8 +27,7 @@ public class Workserver {
     int MAX_QUEUE = 100;
     int numTable;
     public List <NoSqlDB> listDb = new LinkedList<>();
-    public ResponseItem listR = new ResponseItem();
-
+    public ResponseItem listR;
     Request r;
 
     public static void main(String[] args){
@@ -80,7 +79,10 @@ public class Workserver {
             while (!socket.isClosed()){
                 try {
                     r = (Request)ois.readObject();
-                    new ThreadWs(r, oos,listDb,listR);
+                    listR = new ResponseItem();
+                    ThreadWs t = new ThreadWs(r, oos,listDb,listR);
+                    listR.ResponseItemList.clear();
+                    t = null;
                 } catch (IOException e) {
                     try {
                         socket.close();

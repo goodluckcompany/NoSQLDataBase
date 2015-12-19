@@ -34,7 +34,6 @@ public class ThreadWs implements Runnable {
             }
         }
         int numtable = tableNum(req.getNameTable(),listDb);
-
         if (numtable == -1){
             if (nosqlR.equals("size")) {
                 r.setSize(lt.getSize());
@@ -54,6 +53,9 @@ public class ThreadWs implements Runnable {
         req.setReqItems(is);
         t = new Thread(this);
         t.start();
+        list.clear();
+        items.ResponseItemList.clear();
+        System.gc();
     }
 
     @Override
